@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafeZone AI Guardian — Intelligent Personal Safety for Women</title>
+    <meta name="description"
+        content="SafeZone AI Guardian provides proactive, real-time protection using AI-powered emergency alerts, GPS tracking, voice stress detection, and community-driven risk intelligence to ensure women's safety.">
+    <meta name="keywords" content="women safety, AI guardian, personal safety, emergency alert, GPS tracking, risk map">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- Particle Canvas Background -->
+    <canvas id="particles-canvas"></canvas>
+
+    <!-- Navigation -->
+    <nav id="main-nav" class="navbar">
+        <div class="nav-container">
+            <a href="#" class="nav-logo">
+                <div class="logo-icon">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                        <circle cx="16" cy="16" r="14" stroke="url(#logoGrad)" stroke-width="2.5" />
+                        <path d="M16 8C12 8 9 11 9 15C9 21 16 26 16 26C16 26 23 21 23 15C23 11 20 8 16 8Z"
+                            fill="url(#logoGrad)" />
+                        <circle cx="16" cy="15" r="3" fill="#0a0e1a" />
+                        <defs>
+                            <linearGradient id="logoGrad" x1="4" y1="4" x2="28" y2="28">
+                                <stop stop-color="#6c63ff" />
+                                <stop offset="1" stop-color="#e040fb" />
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <span class="logo-text">Safe<span class="logo-accent">Zone</span></span>
+            </a>
+            <div class="nav-links" id="nav-links">
+                <a href="#features" class="nav-link">Features</a>
+                <a href="#how-it-works" class="nav-link">How It Works</a>
+                <a href="#risk-map" class="nav-link">Risk Map</a>
+                <a href="#guardian" class="nav-link">AI Guardian</a>
+                <a href="#community" class="nav-link">Community</a>
+                <a href="#download" class="nav-link nav-cta">Get Protected</a>
+            </div>
+            <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="hero" class="hero">
+        <div class="hero-bg-orbs">
+            <div class="orb orb-1"></div>
+            <div class="orb orb-2"></div>
+            <div class="orb orb-3"></div>
+        </div>
+        <div class="hero-container">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <span class="badge-dot"></span>
+                    AI-Powered Protection
+                </div>
+                <h1 class="hero-title">
+                    Your <span class="gradient-text">AI Guardian</span>
+                    <br>Always Watching Over You
+                </h1>
+                <p class="hero-subtitle">
+                    SafeZone uses cutting-edge AI to provide real-time, proactive safety —
+                    detecting danger even when you can't call for help. One tap is all it takes.
+                </p>
+                <div class="hero-actions">
+                    <button class="btn btn-primary btn-glow" id="emergency-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path
+                                d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z" />
+                        </svg>
+                        Emergency SOS
+                    </button>
+                    <a href="#features" class="btn btn-secondary">
+                        Explore Features
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M7 17l9.2-9.2M17 17V7.8H7.8" />
+                        </svg>
+                    </a>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <span class="stat-number" data-count="50000">0</span><span class="stat-suffix">+</span>
+                        <span class="stat-label">Women Protected</span>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat">
+                        <span class="stat-number" data-count="120">0</span><span class="stat-suffix">+</span>
+                        <span class="stat-label">Cities Covered</span>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat">
+                        <span class="stat-number" data-count="99">0</span><span class="stat-suffix">%</span>
+                        <span class="stat-label">Response Rate</span>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="phone-mockup">
+                    <div class="phone-frame">
+                        <div class="phone-notch"></div>
+                        <div class="phone-screen">
+                            <div class="phone-status-bar">
+                                <span>9:41</span>
+                                <div class="phone-status-icons">
+                                    <svg width="16" height="12" viewBox="0 0 16 12">
+                                        <rect x="0" y="3" width="3" height="9" rx="1" fill="white" />
+                                        <rect x="4.5" y="1" width="3" height="11" rx="1" fill="white" />
+                                        <rect x="9" y="5" width="3" height="7" rx="1" fill="white" />
+                                        <rect x="13.5" y="7" width="3" height="5" rx="1" fill="white" opacity="0.5" />
+                                    </svg>
+                                    <svg width="20" height="12" viewBox="0 0 24 12">
+                                        <rect x="0" y="0" width="22" height="12" rx="3" stroke="white"
+                                            stroke-width="1.5" fill="none" />
+                                        <rect x="22.5" y="3.5" width="2" height="5" rx="1" fill="white" opacity="0.5" />
+                                        <rect x="2" y="2" width="14" height="8" rx="1.5" fill="#4ade80" />
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="phone-app">
+                                <div class="app-header-text">SafeZone</div>
+                                <div class="app-status safe">
+                                    <div class="status-ring">
+                                        <svg width="120" height="120" viewBox="0 0 120 120">
+                                            <circle cx="60" cy="60" r="52" stroke="rgba(74,222,128,0.2)"
+                                                stroke-width="6" fill="none" />
+                                            <circle cx="60" cy="60" r="52" stroke="#4ade80" stroke-width="6" fill="none"
+                                                stroke-dasharray="327" stroke-dashoffset="0" stroke-linecap="round"
+                                                class="status-progress" />
+                                        </svg>
+                                        <div class="status-icon">🛡️</div>
+                                    </div>
+                                    <div class="status-text">You're Safe</div>
+                                    <div class="status-sub">AI Guardian Active</div>
+                                </div>
+                                <div class="app-quick-actions">
+                                    <button class="quick-action sos-btn">
+                                        <span class="qa-icon">🚨</span>
+                                        <span>SOS</span>
+                                    </button>
+                                    <button class="quick-action">
+                                        <span class="qa-icon">📞</span>
+                                        <span>Fake Call</span>
+                                    </button>
+                                    <button class="quick-action">
+                                        <span class="qa-icon">🎙️</span>
+                                        <span>Record</span>
+                                    </button>
+                                    <button class="quick-action">
+                                        <span class="qa-icon">📍</span>
+                                        <span>Share</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="phone-glow"></div>
+                </div>
+            </div>
+        </div>
+        <div class="hero-scroll-indicator">
+            <div class="scroll-line"></div>
+            <span>Scroll to explore</span>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Core Features</span>
+                <h2 class="section-title">Everything You Need to <span class="gradient-text">Stay Safe</span></h2>
+                <p class="section-subtitle">AI-powered protection that works around the clock, even when you can't
+                    respond manually.</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card feature-card-large" data-aos="fade-up">
+                    <div class="feature-icon-wrap">
+                        <div class="feature-icon emergency">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+                            </svg>
+                        </div>
+                    </div>
+                    <h3 class="feature-title">One-Tap Emergency SOS</h3>
+                    <p class="feature-desc">Instantly alert your trusted contacts with your live GPS location. A single
+                        tap sends SMS, calls, and push notifications — even if your screen is locked.</p>
+                    <div class="feature-demo">
+                        <button class="demo-sos-btn" id="demo-sos">
+                            <span class="sos-pulse"></span>
+                            <span class="sos-pulse delay"></span>
+                            <span class="sos-text">TAP FOR SOS</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="feature-icon-wrap">
+                        <div class="feature-icon tracking">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="10" r="3" />
+                                <path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 10-16 0c0 3 2.7 7 8 11.7z" />
+                            </svg>
+                        </div>
+                    </div>
+                    <h3 class="feature-title">Live GPS Tracking</h3>
+                    <p class="feature-desc">Continuous location sharing with your safety circle. Your trusted contacts
+                        can track your journey in real-time on a secure map.</p>
+                </div>
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="feature-icon-wrap">
+                        <div class="feature-icon ai-guardian">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                            </svg>
+                        </div>
+                    </div>
+                    <h3 class="feature-title">Silent AI Guardian</h3>
+                    <p class="feature-desc">Detects distress keywords like "help" or "stop" and analyzes voice stress
+                        patterns to automatically trigger emergency alerts — no manual action needed.</p>
+                </div>
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="feature-icon-wrap">
+                        <div class="feature-icon fake-call">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path
+                                    d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z" />
+                            </svg>
+                        </div>
+                    </div>
+                    <h3 class="feature-title">Fake Call & AI Warning</h3>
+                    <p class="feature-desc">Trigger a realistic fake incoming call to escape uncomfortable situations.
+                        The AI voice can also warn potential attackers that authorities are being notified.</p>
+                </div>
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="400">
+                    <div class="feature-icon-wrap">
+                        <div class="feature-icon recording">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z" />
+                                <path d="M19 10v2a7 7 0 01-14 0v-2" />
+                                <line x1="12" y1="19" x2="12" y2="23" />
+                                <line x1="8" y1="23" x2="16" y2="23" />
+                            </svg>
+                        </div>
+                    </div>
+                    <h3 class="feature-title">Auto Audio Recording</h3>
+                    <p class="feature-desc">Automatically begins recording audio during emergencies, creating evidence
+                        that is securely encrypted and cloud-stored for later use by authorities.</p>
+                </div>
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="500">
+                    <div class="feature-icon-wrap">
+                        <div class="feature-icon crowd">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+                                <circle cx="9" cy="7" r="4" />
+                                <path d="M23 21v-2a4 4 0 00-3-3.87" />
+                                <path d="M16 3.13a4 4 0 010 7.75" />
+                            </svg>
+                        </div>
+                    </div>
+                    <h3 class="feature-title">Crowd Risk Intelligence</h3>
+                    <p class="feature-desc">Community-powered safety: when multiple users report danger in an area, it's
+                        automatically marked as unsafe on the map for everyone nearby.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section id="how-it-works" class="how-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">How It Works</span>
+                <h2 class="section-title">Protection in <span class="gradient-text">Three Steps</span></h2>
+                <p class="section-subtitle">Get started in seconds — your safety shouldn't require a manual.</p>
+            </div>
+            <div class="steps-container">
+                <div class="step" data-aos="fade-right">
+                    <div class="step-number">01</div>
+                    <div class="step-content">
+                        <h3>Set Up Your Safety Circle</h3>
+                        <p>Add trusted contacts — family, friends, or local authorities. They'll receive real-time
+                            alerts when you're in danger.</p>
+                    </div>
+                    <div class="step-visual">
+                        <div class="step-icon-circle">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.5">
+                                <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+                                <circle cx="9" cy="7" r="4" />
+                                <path d="M23 21v-2a4 4 0 00-3-3.87" />
+                                <path d="M16 3.13a4 4 0 010 7.75" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="step-connector">
+                    <svg width="40" height="60" viewBox="0 0 40 60">
+                        <path d="M20 0 L20 60" stroke="url(#connGrad)" stroke-width="2" stroke-dasharray="6 4" />
+                        <defs>
+                            <linearGradient id="connGrad" x1="0" y1="0" x2="0" y2="60" gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#6c63ff" />
+                                <stop offset="1" stop-color="#e040fb" />
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <div class="step" data-aos="fade-left">
+                    <div class="step-number">02</div>
+                    <div class="step-content">
+                        <h3>Enable AI Guardian</h3>
+                        <p>Turn on the Silent AI Guardian. It listens for distress keywords and voice stress patterns in
+                            the background — completely hands-free.</p>
+                    </div>
+                    <div class="step-visual">
+                        <div class="step-icon-circle">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.5">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="step-connector">
+                    <svg width="40" height="60" viewBox="0 0 40 60">
+                        <path d="M20 0 L20 60" stroke="url(#connGrad2)" stroke-width="2" stroke-dasharray="6 4" />
+                        <defs>
+                            <linearGradient id="connGrad2" x1="0" y1="0" x2="0" y2="60" gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#e040fb" />
+                                <stop offset="1" stop-color="#ff6b6b" />
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <div class="step" data-aos="fade-right">
+                    <div class="step-number">03</div>
+                    <div class="step-content">
+                        <h3>Stay Protected 24/7</h3>
+                        <p>SafeZone works silently in the background. If danger is detected, it automatically sends
+                            alerts, shares your location, and records evidence.</p>
+                    </div>
+                    <div class="step-visual">
+                        <div class="step-icon-circle">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.5">
+                                <circle cx="12" cy="12" r="10" />
+                                <polyline points="12 6 12 12 16 14" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- AI Guardian Interactive Demo -->
+    <section id="guardian" class="guardian-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">AI Guardian Demo</span>
+                <h2 class="section-title">Experience the <span class="gradient-text">Silent Guardian</span></h2>
+                <p class="section-subtitle">Type or speak a distress phrase — see how SafeZone's AI detects danger in
+                    real-time.</p>
+            </div>
+            <div class="guardian-demo">
+                <div class="guardian-panel">
+                    <div class="guardian-monitor">
+                        <div class="monitor-header">
+                            <div class="monitor-dot green"></div>
+                            <span>AI Guardian — Listening</span>
+                            <div class="monitor-status active">ACTIVE</div>
+                        </div>
+                        <div class="monitor-body">
+                            <div class="waveform" id="waveform">
+                                <div class="wave-bar" style="--i:0"></div>
+                                <div class="wave-bar" style="--i:1"></div>
+                                <div class="wave-bar" style="--i:2"></div>
+                                <div class="wave-bar" style="--i:3"></div>
+                                <div class="wave-bar" style="--i:4"></div>
+                                <div class="wave-bar" style="--i:5"></div>
+                                <div class="wave-bar" style="--i:6"></div>
+                                <div class="wave-bar" style="--i:7"></div>
+                                <div class="wave-bar" style="--i:8"></div>
+                                <div class="wave-bar" style="--i:9"></div>
+                                <div class="wave-bar" style="--i:10"></div>
+                                <div class="wave-bar" style="--i:11"></div>
+                                <div class="wave-bar" style="--i:12"></div>
+                                <div class="wave-bar" style="--i:13"></div>
+                                <div class="wave-bar" style="--i:14"></div>
+                                <div class="wave-bar" style="--i:15"></div>
+                                <div class="wave-bar" style="--i:16"></div>
+                                <div class="wave-bar" style="--i:17"></div>
+                                <div class="wave-bar" style="--i:18"></div>
+                                <div class="wave-bar" style="--i:19"></div>
+                            </div>
+                            <div class="guardian-input-wrap">
+                                <input type="text" id="guardian-input" class="guardian-input"
+                                    placeholder='Try typing "help me" or "someone stop him"...' autocomplete="off">
+                                <button class="guardian-mic" id="guardian-mic" title="Hold to simulate voice">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2">
+                                        <path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z" />
+                                        <path d="M19 10v2a7 7 0 01-14 0v-2" />
+                                    </svg>
+                                </button>
+                            </div>
+                            <div class="detection-log" id="detection-log">
+                                <div class="log-entry system">
+                                    <span class="log-time">System</span>
+                                    <span class="log-msg">AI Guardian initialized. Monitoring for distress
+                                        signals...</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="guardian-info">
+                    <h3>How Silent AI Guardian Works</h3>
+                    <div class="info-items">
+                        <div class="info-item">
+                            <div class="info-icon">🎤</div>
+                            <div>
+                                <strong>Voice Analysis</strong>
+                                <p>Continuously monitors ambient audio for distress keywords and voice stress patterns.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-icon">🧠</div>
+                            <div>
+                                <strong>AI Processing</strong>
+                                <p>On-device AI processes speech in real-time with zero cloud delay for instant
+                                    response.</p>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-icon">⚡</div>
+                            <div>
+                                <strong>Auto-Trigger</strong>
+                                <p>When distress is detected, alerts are sent automatically — no button press needed.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-icon">🔒</div>
+                            <div>
+                                <strong>Privacy First</strong>
+                                <p>All processing happens on-device. No audio is stored unless an emergency is
+                                    triggered.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Risk Map Section -->
+    <section id="risk-map" class="risk-map-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Safety Intelligence</span>
+                <h2 class="section-title">AI-Powered <span class="gradient-text">Risk Score Map</span></h2>
+                <p class="section-subtitle">Community-driven safety intelligence that shows real-time risk levels across
+                    your city.</p>
+            </div>
+            <div class="map-container">
+                <div class="map-wrapper">
+                    <div id="safety-map" class="safety-map"></div>
+                    <div class="map-overlay-controls">
+                        <div class="map-legend">
+                            <h4>Risk Levels</h4>
+                            <div class="legend-items">
+                                <div class="legend-item"><span class="legend-dot safe"></span> Safe Zone</div>
+                                <div class="legend-item"><span class="legend-dot moderate"></span> Moderate</div>
+                                <div class="legend-item"><span class="legend-dot caution"></span> Caution</div>
+                                <div class="legend-item"><span class="legend-dot danger"></span> High Risk</div>
+                            </div>
+                        </div>
+                        <button class="map-report-btn" id="report-btn">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" />
+                                <line x1="4" y1="22" x2="4" y2="15" />
+                            </svg>
+                            Report Danger
+                        </button>
+                    </div>
+                </div>
+                <div class="map-stats">
+                    <div class="map-stat-card">
+                        <div class="map-stat-icon">📊</div>
+                        <div class="map-stat-value">2,847</div>
+                        <div class="map-stat-label">Reports Today</div>
+                    </div>
+                    <div class="map-stat-card">
+                        <div class="map-stat-icon">🗺️</div>
+                        <div class="map-stat-value">156</div>
+                        <div class="map-stat-label">Zones Monitored</div>
+                    </div>
+                    <div class="map-stat-card">
+                        <div class="map-stat-icon">👥</div>
+                        <div class="map-stat-value">12K+</div>
+                        <div class="map-stat-label">Active Guardians</div>
+                    </div>
+                    <div class="map-stat-card">
+                        <div class="map-stat-icon">⏱️</div>
+                        <div class="map-stat-value">&lt;30s</div>
+                        <div class="map-stat-label">Avg Alert Time</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Community / Testimonials -->
+    <section id="community" class="community-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Community</span>
+                <h2 class="section-title">Trusted by <span class="gradient-text">Thousands</span></h2>
+                <p class="section-subtitle">Real stories from real women who feel safer every day with SafeZone.</p>
+            </div>
+            <div class="testimonials-grid">
+                <div class="testimonial-card" data-aos="fade-up">
+                    <div class="testimonial-quote">"The Silent Guardian detected my cry for help when I couldn't reach
+                        my phone. My family was alerted in seconds. SafeZone literally saved my life."</div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar" style="background: linear-gradient(135deg, #6c63ff, #e040fb);">P
+                        </div>
+                        <div>
+                            <div class="author-name">Priya Sharma</div>
+                            <div class="author-role">Delhi, India</div>
+                        </div>
+                    </div>
+                    <div class="testimonial-stars">★★★★★</div>
+                </div>
+                <div class="testimonial-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="testimonial-quote">"The fake call feature got me out of an uncomfortable situation with
+                        a stranger. It felt so real he backed off immediately. Every woman needs this app."</div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar" style="background: linear-gradient(135deg, #e040fb, #ff6b6b);">A
+                        </div>
+                        <div>
+                            <div class="author-name">Ananya Reddy</div>
+                            <div class="author-role">Bangalore, India</div>
+                        </div>
+                    </div>
+                    <div class="testimonial-stars">★★★★★</div>
+                </div>
+                <div class="testimonial-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="testimonial-quote">"The risk map helped me avoid an unsafe area during my late-night
+                        commute. The community reports are incredibly accurate and up-to-date."</div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar" style="background: linear-gradient(135deg, #4ade80, #06b6d4);">M
+                        </div>
+                        <div>
+                            <div class="author-name">Meera Patel</div>
+                            <div class="author-role">Mumbai, India</div>
+                        </div>
+                    </div>
+                    <div class="testimonial-stars">★★★★★</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA / Download Section -->
+    <section id="download" class="download-section">
+        <div class="container">
+            <div class="download-card">
+                <div class="download-bg-pattern"></div>
+                <div class="download-content">
+                    <h2>Take Control of Your Safety <span class="gradient-text">Today</span></h2>
+                    <p>Join 50,000+ women who trust SafeZone AI Guardian for their daily protection. Free to download,
+                        always watching over you.</p>
+                    <div class="download-buttons">
+                        <button class="store-btn">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z" />
+                            </svg>
+                            <div>
+                                <span class="store-label">Download on the</span>
+                                <span class="store-name">App Store</span>
+                            </div>
+                        </button>
+                        <button class="store-btn">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 01-.61-.92V2.734a1 1 0 01.609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-3.199l2.302 2.302-2.302 2.302L15.396 12l2.302-2.492zM5.864 3.468L16.8 9.8l-2.302 2.302L5.864 3.468z" />
+                            </svg>
+                            <div>
+                                <span class="store-label">Get it on</span>
+                                <span class="store-name">Google Play</span>
+                            </div>
+                        </button>
+                    </div>
+                    <div class="download-trust">
+                        <div class="trust-item">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4ade80"
+                                stroke-width="2">
+                                <path d="M22 11.08V12a10 10 0 11-5.93-9.14" />
+                                <polyline points="22 4 12 14.01 9 11.01" />
+                            </svg>
+                            Free Forever
+                        </div>
+                        <div class="trust-item">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4ade80"
+                                stroke-width="2">
+                                <path d="M22 11.08V12a10 10 0 11-5.93-9.14" />
+                                <polyline points="22 4 12 14.01 9 11.01" />
+                            </svg>
+                            No Ads
+                        </div>
+                        <div class="trust-item">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4ade80"
+                                stroke-width="2">
+                                <path d="M22 11.08V12a10 10 0 11-5.93-9.14" />
+                                <polyline points="22 4 12 14.01 9 11.01" />
+                            </svg>
+                            Privacy First
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="#" class="nav-logo">
+                        <div class="logo-icon">
+                            <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
+                                <circle cx="16" cy="16" r="14" stroke="url(#logoGrad2)" stroke-width="2.5" />
+                                <path d="M16 8C12 8 9 11 9 15C9 21 16 26 16 26C16 26 23 21 23 15C23 11 20 8 16 8Z"
+                                    fill="url(#logoGrad2)" />
+                                <circle cx="16" cy="15" r="3" fill="#0a0e1a" />
+                                <defs>
+                                    <linearGradient id="logoGrad2" x1="4" y1="4" x2="28" y2="28">
+                                        <stop stop-color="#6c63ff" />
+                                        <stop offset="1" stop-color="#e040fb" />
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                        </div>
+                        <span class="logo-text">Safe<span class="logo-accent">Zone</span></span>
+                    </a>
+                    <p class="footer-tagline">AI-powered safety for every woman, everywhere.</p>
+                </div>
+                <div class="footer-links-group">
+                    <h4>Product</h4>
+                    <a href="#features">Features</a>
+                    <a href="#risk-map">Risk Map</a>
+                    <a href="#guardian">AI Guardian</a>
+                    <a href="#download">Download</a>
+                </div>
+                <div class="footer-links-group">
+                    <h4>Resources</h4>
+                    <a href="#">Safety Tips</a>
+                    <a href="#">Blog</a>
+                    <a href="#">API Docs</a>
+                    <a href="#">Community</a>
+                </div>
+                <div class="footer-links-group">
+                    <h4>Company</h4>
+                    <a href="#">About Us</a>
+                    <a href="#">Careers</a>
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 SafeZone AI Guardian. All rights reserved. Made with ❤️ for women's safety.</p>
+                <div class="footer-socials">
+                    <a href="#" aria-label="Twitter">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path
+                                d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                        </svg>
+                    </a>
+                    <a href="#" aria-label="Instagram">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <rect x="2" y="2" width="20" height="20" rx="5" />
+                            <circle cx="12" cy="12" r="5" />
+                            <circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" />
+                        </svg>
+                    </a>
+                    <a href="#" aria-label="LinkedIn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path
+                                d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Emergency Alert Modal -->
+    <div class="modal-overlay" id="emergency-modal">
+        <div class="modal emergency-modal">
+            <div class="modal-close" id="modal-close">&times;</div>
+            <div class="emergency-header">
+                <div class="emergency-pulse-ring">
+                    <div class="emergency-icon">🚨</div>
+                </div>
+                <h2>Emergency SOS Activated</h2>
+            </div>
+            <div class="emergency-body">
+                <div class="emergency-info">
+                    <div class="info-row">
+                        <span class="info-label">Status</span>
+                        <span class="info-value alert-active">SENDING ALERTS</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Location</span>
+                        <span class="info-value" id="user-location">Detecting...</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Contacts Notified</span>
+                        <span class="info-value">3 of 3</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Audio Recording</span>
+                        <span class="info-value recording-active">● Recording</span>
+                    </div>
+                </div>
+                <div class="emergency-contacts">
+                    <div class="contact-item notified">
+                        <div class="contact-avatar">👩</div>
+                        <div class="contact-info">
+                            <div class="contact-name">Mom</div>
+                            <div class="contact-status">✓ Alert Sent</div>
+                        </div>
+                    </div>
+                    <div class="contact-item notified">
+                        <div class="contact-avatar">👨</div>
+                        <div class="contact-info">
+                            <div class="contact-name">Dad</div>
+                            <div class="contact-status">✓ Alert Sent</div>
+                        </div>
+                    </div>
+                    <div class="contact-item notified">
+                        <div class="contact-avatar">👮</div>
+                        <div class="contact-info">
+                            <div class="contact-name">Local Police</div>
+                            <div class="contact-status">✓ Alert Sent</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button class="btn btn-danger" id="cancel-sos">Cancel SOS</button>
+        </div>
+    </div>
+
+    <!-- Fake Call Modal -->
+    <div class="modal-overlay" id="fakecall-modal">
+        <div class="modal fakecall-modal">
+            <div class="fakecall-screen">
+                <div class="caller-avatar-ring">
+                    <div class="caller-avatar">👩‍💼</div>
+                </div>
+                <div class="caller-name">Mom</div>
+                <div class="caller-label">Incoming Call...</div>
+                <div class="call-actions">
+                    <button class="call-btn decline" id="decline-call">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                            <path
+                                d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z" />
+                        </svg>
+                    </button>
+                    <button class="call-btn accept" id="accept-call">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                            <path
+                                d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Report Danger Modal -->
+    <div class="modal-overlay" id="report-modal">
+        <div class="modal report-modal">
+            <div class="modal-close" id="report-close">&times;</div>
+            <h2>Report Unsafe Area</h2>
+            <p>Help your community by reporting a dangerous location. Your report is anonymous.</p>
+            <form id="report-form">
+                <div class="form-group">
+                    <label for="report-type">Type of Danger</label>
+                    <select id="report-type">
+                        <option>Harassment</option>
+                        <option>Poor Lighting</option>
+                        <option>Stalking</option>
+                        <option>Theft/Robbery</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="report-severity">Severity Level</label>
+                    <div class="severity-selector">
+                        <button type="button" class="severity-btn moderate" data-level="moderate">Moderate</button>
+                        <button type="button" class="severity-btn caution active" data-level="caution">Caution</button>
+                        <button type="button" class="severity-btn danger" data-level="danger">High Risk</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="report-desc">Description (optional)</label>
+                    <textarea id="report-desc" rows="3" placeholder="Describe what happened..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full">Submit Report</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>
