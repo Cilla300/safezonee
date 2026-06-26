@@ -1,846 +1,733 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SafeZone AI Guardian — Intelligent Personal Safety for Women</title>
-    <meta name="description"
-        content="SafeZone AI Guardian provides proactive, real-time protection using AI-powered emergency alerts, GPS tracking, voice stress detection, and community-driven risk intelligence to ensure women's safety.">
-    <meta name="keywords" content="women safety, AI guardian, personal safety, emergency alert, GPS tracking, risk map">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SafeZone AI Guardian — Women's Safety Platform</title>
+  <meta name="description" content="Real-time AI-powered personal safety app for women. GPS tracking, emergency SOS, danger zone mapping and distress detection."/>
+  <link rel="stylesheet" href="styles.css"/>
 </head>
-
 <body>
-    <!-- Particle Canvas Background -->
-    <canvas id="particles-canvas"></canvas>
 
-    <!-- Navigation -->
-    <nav id="main-nav" class="navbar">
-        <div class="nav-container">
-            <a href="#" class="nav-logo">
-                <div class="logo-icon">
-                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-                        <circle cx="16" cy="16" r="14" stroke="url(#logoGrad)" stroke-width="2.5" />
-                        <path d="M16 8C12 8 9 11 9 15C9 21 16 26 16 26C16 26 23 21 23 15C23 11 20 8 16 8Z"
-                            fill="url(#logoGrad)" />
-                        <circle cx="16" cy="15" r="3" fill="#0a0e1a" />
-                        <defs>
-                            <linearGradient id="logoGrad" x1="4" y1="4" x2="28" y2="28">
-                                <stop stop-color="#6c63ff" />
-                                <stop offset="1" stop-color="#e040fb" />
-                            </linearGradient>
-                        </defs>
-                    </svg>
-                </div>
-                <span class="logo-text">Safe<span class="logo-accent">Zone</span></span>
-            </a>
-            <div class="nav-links" id="nav-links">
-                <a href="#features" class="nav-link">Features</a>
-                <a href="#how-it-works" class="nav-link">How It Works</a>
-                <a href="#risk-map" class="nav-link">Risk Map</a>
-                <a href="#guardian" class="nav-link">AI Guardian</a>
-                <a href="#community" class="nav-link">Community</a>
-                <a href="#download" class="nav-link nav-cta">Get Protected</a>
-            </div>
-            <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation">
-                <span></span><span></span><span></span>
-            </button>
-        </div>
-    </nav>
+<!-- ── AMBIENT ORBS ── -->
+<div class="ambient-orbs">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+</div>
 
-    <!-- Hero Section -->
-    <section id="hero" class="hero">
-        <div class="hero-bg-orbs">
-            <div class="orb orb-1"></div>
-            <div class="orb orb-2"></div>
-            <div class="orb orb-3"></div>
-        </div>
-        <div class="hero-container">
-            <div class="hero-content">
-                <div class="hero-badge">
-                    <span class="badge-dot"></span>
-                    AI-Powered Protection
-                </div>
-                <h1 class="hero-title">
-                    Your <span class="gradient-text">AI Guardian</span>
-                    <br>Always Watching Over You
-                </h1>
-                <p class="hero-subtitle">
-                    SafeZone uses cutting-edge AI to provide real-time, proactive safety —
-                    detecting danger even when you can't call for help. One tap is all it takes.
-                </p>
-                <div class="hero-actions">
-                    <button class="btn btn-primary btn-glow" id="emergency-btn">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2">
-                            <path
-                                d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z" />
-                        </svg>
-                        Emergency SOS
-                    </button>
-                    <a href="#features" class="btn btn-secondary">
-                        Explore Features
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2">
-                            <path d="M7 17l9.2-9.2M17 17V7.8H7.8" />
-                        </svg>
-                    </a>
-                </div>
-                <div class="hero-stats">
-                    <div class="stat">
-                        <span class="stat-number" data-count="50000">0</span><span class="stat-suffix">+</span>
-                        <span class="stat-label">Women Protected</span>
-                    </div>
-                    <div class="stat-divider"></div>
-                    <div class="stat">
-                        <span class="stat-number" data-count="120">0</span><span class="stat-suffix">+</span>
-                        <span class="stat-label">Cities Covered</span>
-                    </div>
-                    <div class="stat-divider"></div>
-                    <div class="stat">
-                        <span class="stat-number" data-count="99">0</span><span class="stat-suffix">%</span>
-                        <span class="stat-label">Response Rate</span>
-                    </div>
-                </div>
-            </div>
-            <div class="hero-visual">
-                <div class="phone-mockup">
-                    <div class="phone-frame">
-                        <div class="phone-notch"></div>
-                        <div class="phone-screen">
-                            <div class="phone-status-bar">
-                                <span>9:41</span>
-                                <div class="phone-status-icons">
-                                    <svg width="16" height="12" viewBox="0 0 16 12">
-                                        <rect x="0" y="3" width="3" height="9" rx="1" fill="white" />
-                                        <rect x="4.5" y="1" width="3" height="11" rx="1" fill="white" />
-                                        <rect x="9" y="5" width="3" height="7" rx="1" fill="white" />
-                                        <rect x="13.5" y="7" width="3" height="5" rx="1" fill="white" opacity="0.5" />
-                                    </svg>
-                                    <svg width="20" height="12" viewBox="0 0 24 12">
-                                        <rect x="0" y="0" width="22" height="12" rx="3" stroke="white"
-                                            stroke-width="1.5" fill="none" />
-                                        <rect x="22.5" y="3.5" width="2" height="5" rx="1" fill="white" opacity="0.5" />
-                                        <rect x="2" y="2" width="14" height="8" rx="1.5" fill="#4ade80" />
-                                    </svg>
-                                </div>
-                            </div>
-                            <div class="phone-app">
-                                <div class="app-header-text">SafeZone</div>
-                                <div class="app-status safe">
-                                    <div class="status-ring">
-                                        <svg width="120" height="120" viewBox="0 0 120 120">
-                                            <circle cx="60" cy="60" r="52" stroke="rgba(74,222,128,0.2)"
-                                                stroke-width="6" fill="none" />
-                                            <circle cx="60" cy="60" r="52" stroke="#4ade80" stroke-width="6" fill="none"
-                                                stroke-dasharray="327" stroke-dashoffset="0" stroke-linecap="round"
-                                                class="status-progress" />
-                                        </svg>
-                                        <div class="status-icon">🛡️</div>
-                                    </div>
-                                    <div class="status-text">You're Safe</div>
-                                    <div class="status-sub">AI Guardian Active</div>
-                                </div>
-                                <div class="app-quick-actions">
-                                    <button class="quick-action sos-btn">
-                                        <span class="qa-icon">🚨</span>
-                                        <span>SOS</span>
-                                    </button>
-                                    <button class="quick-action">
-                                        <span class="qa-icon">📞</span>
-                                        <span>Fake Call</span>
-                                    </button>
-                                    <button class="quick-action">
-                                        <span class="qa-icon">🎙️</span>
-                                        <span>Record</span>
-                                    </button>
-                                    <button class="quick-action">
-                                        <span class="qa-icon">📍</span>
-                                        <span>Share</span>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="phone-glow"></div>
-                </div>
-            </div>
-        </div>
-        <div class="hero-scroll-indicator">
-            <div class="scroll-line"></div>
-            <span>Scroll to explore</span>
-        </div>
-    </section>
+<div id="root-app">
 
-    <!-- Features Section -->
-    <section id="features" class="features-section">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag">Core Features</span>
-                <h2 class="section-title">Everything You Need to <span class="gradient-text">Stay Safe</span></h2>
-                <p class="section-subtitle">AI-powered protection that works around the clock, even when you can't
-                    respond manually.</p>
-            </div>
-            <div class="features-grid">
-                <div class="feature-card feature-card-large" data-aos="fade-up">
-                    <div class="feature-icon-wrap">
-                        <div class="feature-icon emergency">
-                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-                            </svg>
-                        </div>
-                    </div>
-                    <h3 class="feature-title">One-Tap Emergency SOS</h3>
-                    <p class="feature-desc">Instantly alert your trusted contacts with your live GPS location. A single
-                        tap sends SMS, calls, and push notifications — even if your screen is locked.</p>
-                    <div class="feature-demo">
-                        <button class="demo-sos-btn" id="demo-sos">
-                            <span class="sos-pulse"></span>
-                            <span class="sos-pulse delay"></span>
-                            <span class="sos-text">TAP FOR SOS</span>
-                        </button>
-                    </div>
-                </div>
-                <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
-                    <div class="feature-icon-wrap">
-                        <div class="feature-icon tracking">
-                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <circle cx="12" cy="10" r="3" />
-                                <path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 10-16 0c0 3 2.7 7 8 11.7z" />
-                            </svg>
-                        </div>
-                    </div>
-                    <h3 class="feature-title">Live GPS Tracking</h3>
-                    <p class="feature-desc">Continuous location sharing with your safety circle. Your trusted contacts
-                        can track your journey in real-time on a secure map.</p>
-                </div>
-                <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
-                    <div class="feature-icon-wrap">
-                        <div class="feature-icon ai-guardian">
-                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                            </svg>
-                        </div>
-                    </div>
-                    <h3 class="feature-title">Silent AI Guardian</h3>
-                    <p class="feature-desc">Detects distress keywords like "help" or "stop" and analyzes voice stress
-                        patterns to automatically trigger emergency alerts — no manual action needed.</p>
-                </div>
-                <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
-                    <div class="feature-icon-wrap">
-                        <div class="feature-icon fake-call">
-                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path
-                                    d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z" />
-                            </svg>
-                        </div>
-                    </div>
-                    <h3 class="feature-title">Fake Call & AI Warning</h3>
-                    <p class="feature-desc">Trigger a realistic fake incoming call to escape uncomfortable situations.
-                        The AI voice can also warn potential attackers that authorities are being notified.</p>
-                </div>
-                <div class="feature-card" data-aos="fade-up" data-aos-delay="400">
-                    <div class="feature-icon-wrap">
-                        <div class="feature-icon recording">
-                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z" />
-                                <path d="M19 10v2a7 7 0 01-14 0v-2" />
-                                <line x1="12" y1="19" x2="12" y2="23" />
-                                <line x1="8" y1="23" x2="16" y2="23" />
-                            </svg>
-                        </div>
-                    </div>
-                    <h3 class="feature-title">Auto Audio Recording</h3>
-                    <p class="feature-desc">Automatically begins recording audio during emergencies, creating evidence
-                        that is securely encrypted and cloud-stored for later use by authorities.</p>
-                </div>
-                <div class="feature-card" data-aos="fade-up" data-aos-delay="500">
-                    <div class="feature-icon-wrap">
-                        <div class="feature-icon crowd">
-                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
-                                <circle cx="9" cy="7" r="4" />
-                                <path d="M23 21v-2a4 4 0 00-3-3.87" />
-                                <path d="M16 3.13a4 4 0 010 7.75" />
-                            </svg>
-                        </div>
-                    </div>
-                    <h3 class="feature-title">Crowd Risk Intelligence</h3>
-                    <p class="feature-desc">Community-powered safety: when multiple users report danger in an area, it's
-                        automatically marked as unsafe on the map for everyone nearby.</p>
-                </div>
-            </div>
-        </div>
-    </section>
+<!-- ══════════════════════════════════════════════
+     SCREEN: LANDING
+══════════════════════════════════════════════ -->
+<div id="screen-landing" class="screen active">
+<div class="landing">
 
-    <!-- How It Works -->
-    <section id="how-it-works" class="how-section">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag">How It Works</span>
-                <h2 class="section-title">Protection in <span class="gradient-text">Three Steps</span></h2>
-                <p class="section-subtitle">Get started in seconds — your safety shouldn't require a manual.</p>
-            </div>
-            <div class="steps-container">
-                <div class="step" data-aos="fade-right">
-                    <div class="step-number">01</div>
-                    <div class="step-content">
-                        <h3>Set Up Your Safety Circle</h3>
-                        <p>Add trusted contacts — family, friends, or local authorities. They'll receive real-time
-                            alerts when you're in danger.</p>
-                    </div>
-                    <div class="step-visual">
-                        <div class="step-icon-circle">
-                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="1.5">
-                                <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
-                                <circle cx="9" cy="7" r="4" />
-                                <path d="M23 21v-2a4 4 0 00-3-3.87" />
-                                <path d="M16 3.13a4 4 0 010 7.75" />
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-                <div class="step-connector">
-                    <svg width="40" height="60" viewBox="0 0 40 60">
-                        <path d="M20 0 L20 60" stroke="url(#connGrad)" stroke-width="2" stroke-dasharray="6 4" />
-                        <defs>
-                            <linearGradient id="connGrad" x1="0" y1="0" x2="0" y2="60" gradientUnits="userSpaceOnUse">
-                                <stop stop-color="#6c63ff" />
-                                <stop offset="1" stop-color="#e040fb" />
-                            </linearGradient>
-                        </defs>
-                    </svg>
-                </div>
-                <div class="step" data-aos="fade-left">
-                    <div class="step-number">02</div>
-                    <div class="step-content">
-                        <h3>Enable AI Guardian</h3>
-                        <p>Turn on the Silent AI Guardian. It listens for distress keywords and voice stress patterns in
-                            the background — completely hands-free.</p>
-                    </div>
-                    <div class="step-visual">
-                        <div class="step-icon-circle">
-                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="1.5">
-                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-                <div class="step-connector">
-                    <svg width="40" height="60" viewBox="0 0 40 60">
-                        <path d="M20 0 L20 60" stroke="url(#connGrad2)" stroke-width="2" stroke-dasharray="6 4" />
-                        <defs>
-                            <linearGradient id="connGrad2" x1="0" y1="0" x2="0" y2="60" gradientUnits="userSpaceOnUse">
-                                <stop stop-color="#e040fb" />
-                                <stop offset="1" stop-color="#ff6b6b" />
-                            </linearGradient>
-                        </defs>
-                    </svg>
-                </div>
-                <div class="step" data-aos="fade-right">
-                    <div class="step-number">03</div>
-                    <div class="step-content">
-                        <h3>Stay Protected 24/7</h3>
-                        <p>SafeZone works silently in the background. If danger is detected, it automatically sends
-                            alerts, shares your location, and records evidence.</p>
-                    </div>
-                    <div class="step-visual">
-                        <div class="step-icon-circle">
-                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="1.5">
-                                <circle cx="12" cy="12" r="10" />
-                                <polyline points="12 6 12 12 16 14" />
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+  <!-- NAV -->
+  <nav class="nav">
+    <div class="nav-logo" onclick="showScreen('login')">
+      <div class="logo-mark">🛡️</div>
+      <div class="logo-text">
+        <div class="logo-name">SafeZone</div>
+        <div class="logo-tag">AI GUARDIAN</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center">
+      <button class="btn btn-primary btn-sm" onclick="showScreen('login')">Sign In →</button>
+    </div>
+  </nav>
 
-    <!-- AI Guardian Interactive Demo -->
-    <section id="guardian" class="guardian-section">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag">AI Guardian Demo</span>
-                <h2 class="section-title">Experience the <span class="gradient-text">Silent Guardian</span></h2>
-                <p class="section-subtitle">Type or speak a distress phrase — see how SafeZone's AI detects danger in
-                    real-time.</p>
-            </div>
-            <div class="guardian-demo">
-                <div class="guardian-panel">
-                    <div class="guardian-monitor">
-                        <div class="monitor-header">
-                            <div class="monitor-dot green"></div>
-                            <span>AI Guardian — Listening</span>
-                            <div class="monitor-status active">ACTIVE</div>
-                        </div>
-                        <div class="monitor-body">
-                            <div class="waveform" id="waveform">
-                                <div class="wave-bar" style="--i:0"></div>
-                                <div class="wave-bar" style="--i:1"></div>
-                                <div class="wave-bar" style="--i:2"></div>
-                                <div class="wave-bar" style="--i:3"></div>
-                                <div class="wave-bar" style="--i:4"></div>
-                                <div class="wave-bar" style="--i:5"></div>
-                                <div class="wave-bar" style="--i:6"></div>
-                                <div class="wave-bar" style="--i:7"></div>
-                                <div class="wave-bar" style="--i:8"></div>
-                                <div class="wave-bar" style="--i:9"></div>
-                                <div class="wave-bar" style="--i:10"></div>
-                                <div class="wave-bar" style="--i:11"></div>
-                                <div class="wave-bar" style="--i:12"></div>
-                                <div class="wave-bar" style="--i:13"></div>
-                                <div class="wave-bar" style="--i:14"></div>
-                                <div class="wave-bar" style="--i:15"></div>
-                                <div class="wave-bar" style="--i:16"></div>
-                                <div class="wave-bar" style="--i:17"></div>
-                                <div class="wave-bar" style="--i:18"></div>
-                                <div class="wave-bar" style="--i:19"></div>
-                            </div>
-                            <div class="guardian-input-wrap">
-                                <input type="text" id="guardian-input" class="guardian-input"
-                                    placeholder='Try typing "help me" or "someone stop him"...' autocomplete="off">
-                                <button class="guardian-mic" id="guardian-mic" title="Hold to simulate voice">
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                        stroke-width="2">
-                                        <path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z" />
-                                        <path d="M19 10v2a7 7 0 01-14 0v-2" />
-                                    </svg>
-                                </button>
-                            </div>
-                            <div class="detection-log" id="detection-log">
-                                <div class="log-entry system">
-                                    <span class="log-time">System</span>
-                                    <span class="log-msg">AI Guardian initialized. Monitoring for distress
-                                        signals...</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="guardian-info">
-                    <h3>How Silent AI Guardian Works</h3>
-                    <div class="info-items">
-                        <div class="info-item">
-                            <div class="info-icon">🎤</div>
-                            <div>
-                                <strong>Voice Analysis</strong>
-                                <p>Continuously monitors ambient audio for distress keywords and voice stress patterns.
-                                </p>
-                            </div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-icon">🧠</div>
-                            <div>
-                                <strong>AI Processing</strong>
-                                <p>On-device AI processes speech in real-time with zero cloud delay for instant
-                                    response.</p>
-                            </div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-icon">⚡</div>
-                            <div>
-                                <strong>Auto-Trigger</strong>
-                                <p>When distress is detected, alerts are sent automatically — no button press needed.
-                                </p>
-                            </div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-icon">🔒</div>
-                            <div>
-                                <strong>Privacy First</strong>
-                                <p>All processing happens on-device. No audio is stored unless an emergency is
-                                    triggered.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-inner">
 
-    <!-- Risk Map Section -->
-    <section id="risk-map" class="risk-map-section">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag">Safety Intelligence</span>
-                <h2 class="section-title">AI-Powered <span class="gradient-text">Risk Score Map</span></h2>
-                <p class="section-subtitle">Community-driven safety intelligence that shows real-time risk levels across
-                    your city.</p>
-            </div>
-            <div class="map-container">
-                <div class="map-wrapper">
-                    <div id="safety-map" class="safety-map"></div>
-                    <div class="map-overlay-controls">
-                        <div class="map-legend">
-                            <h4>Risk Levels</h4>
-                            <div class="legend-items">
-                                <div class="legend-item"><span class="legend-dot safe"></span> Safe Zone</div>
-                                <div class="legend-item"><span class="legend-dot moderate"></span> Moderate</div>
-                                <div class="legend-item"><span class="legend-dot caution"></span> Caution</div>
-                                <div class="legend-item"><span class="legend-dot danger"></span> High Risk</div>
-                            </div>
-                        </div>
-                        <button class="map-report-btn" id="report-btn">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" />
-                                <line x1="4" y1="22" x2="4" y2="15" />
-                            </svg>
-                            Report Danger
-                        </button>
-                    </div>
-                </div>
-                <div class="map-stats">
-                    <div class="map-stat-card">
-                        <div class="map-stat-icon">📊</div>
-                        <div class="map-stat-value">2,847</div>
-                        <div class="map-stat-label">Reports Today</div>
-                    </div>
-                    <div class="map-stat-card">
-                        <div class="map-stat-icon">🗺️</div>
-                        <div class="map-stat-value">156</div>
-                        <div class="map-stat-label">Zones Monitored</div>
-                    </div>
-                    <div class="map-stat-card">
-                        <div class="map-stat-icon">👥</div>
-                        <div class="map-stat-value">12K+</div>
-                        <div class="map-stat-label">Active Guardians</div>
-                    </div>
-                    <div class="map-stat-card">
-                        <div class="map-stat-icon">⏱️</div>
-                        <div class="map-stat-value">&lt;30s</div>
-                        <div class="map-stat-label">Avg Alert Time</div>
-                    </div>
-                </div>
-            </div>
+      <!-- LEFT TEXT -->
+      <div class="hero-text">
+        <div class="eyebrow">
+          <div class="eyebrow-dot"></div>
+          AI-powered personal safety
         </div>
-    </section>
 
-    <!-- Community / Testimonials -->
-    <section id="community" class="community-section">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag">Community</span>
-                <h2 class="section-title">Trusted by <span class="gradient-text">Thousands</span></h2>
-                <p class="section-subtitle">Real stories from real women who feel safer every day with SafeZone.</p>
-            </div>
-            <div class="testimonials-grid">
-                <div class="testimonial-card" data-aos="fade-up">
-                    <div class="testimonial-quote">"The Silent Guardian detected my cry for help when I couldn't reach
-                        my phone. My family was alerted in seconds. SafeZone literally saved my life."</div>
-                    <div class="testimonial-author">
-                        <div class="author-avatar" style="background: linear-gradient(135deg, #6c63ff, #e040fb);">P
-                        </div>
-                        <div>
-                            <div class="author-name">Priya Sharma</div>
-                            <div class="author-role">Delhi, India</div>
-                        </div>
-                    </div>
-                    <div class="testimonial-stars">★★★★★</div>
-                </div>
-                <div class="testimonial-card" data-aos="fade-up" data-aos-delay="100">
-                    <div class="testimonial-quote">"The fake call feature got me out of an uncomfortable situation with
-                        a stranger. It felt so real he backed off immediately. Every woman needs this app."</div>
-                    <div class="testimonial-author">
-                        <div class="author-avatar" style="background: linear-gradient(135deg, #e040fb, #ff6b6b);">A
-                        </div>
-                        <div>
-                            <div class="author-name">Ananya Reddy</div>
-                            <div class="author-role">Bangalore, India</div>
-                        </div>
-                    </div>
-                    <div class="testimonial-stars">★★★★★</div>
-                </div>
-                <div class="testimonial-card" data-aos="fade-up" data-aos-delay="200">
-                    <div class="testimonial-quote">"The risk map helped me avoid an unsafe area during my late-night
-                        commute. The community reports are incredibly accurate and up-to-date."</div>
-                    <div class="testimonial-author">
-                        <div class="author-avatar" style="background: linear-gradient(135deg, #4ade80, #06b6d4);">M
-                        </div>
-                        <div>
-                            <div class="author-name">Meera Patel</div>
-                            <div class="author-role">Mumbai, India</div>
-                        </div>
-                    </div>
-                    <div class="testimonial-stars">★★★★★</div>
-                </div>
-            </div>
-        </div>
-    </section>
+        <h1 class="hero-h1">
+          Your Guardian,<br>
+          <span class="hero-gradient-text">Always by Your Side</span>
+        </h1>
 
-    <!-- CTA / Download Section -->
-    <section id="download" class="download-section">
-        <div class="container">
-            <div class="download-card">
-                <div class="download-bg-pattern"></div>
-                <div class="download-content">
-                    <h2>Take Control of Your Safety <span class="gradient-text">Today</span></h2>
-                    <p>Join 50,000+ women who trust SafeZone AI Guardian for their daily protection. Free to download,
-                        always watching over you.</p>
-                    <div class="download-buttons">
-                        <button class="store-btn">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                                <path
-                                    d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z" />
-                            </svg>
-                            <div>
-                                <span class="store-label">Download on the</span>
-                                <span class="store-name">App Store</span>
-                            </div>
-                        </button>
-                        <button class="store-btn">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                                <path
-                                    d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 01-.61-.92V2.734a1 1 0 01.609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-3.199l2.302 2.302-2.302 2.302L15.396 12l2.302-2.492zM5.864 3.468L16.8 9.8l-2.302 2.302L5.864 3.468z" />
-                            </svg>
-                            <div>
-                                <span class="store-label">Get it on</span>
-                                <span class="store-name">Google Play</span>
-                            </div>
-                        </button>
-                    </div>
-                    <div class="download-trust">
-                        <div class="trust-item">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4ade80"
-                                stroke-width="2">
-                                <path d="M22 11.08V12a10 10 0 11-5.93-9.14" />
-                                <polyline points="22 4 12 14.01 9 11.01" />
-                            </svg>
-                            Free Forever
-                        </div>
-                        <div class="trust-item">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4ade80"
-                                stroke-width="2">
-                                <path d="M22 11.08V12a10 10 0 11-5.93-9.14" />
-                                <polyline points="22 4 12 14.01 9 11.01" />
-                            </svg>
-                            No Ads
-                        </div>
-                        <div class="trust-item">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4ade80"
-                                stroke-width="2">
-                                <path d="M22 11.08V12a10 10 0 11-5.93-9.14" />
-                                <polyline points="22 4 12 14.01 9 11.01" />
-                            </svg>
-                            Privacy First
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+        <p class="hero-p">
+          SafeZone AI Guardian monitors your journey in real time, detects danger automatically,
+          and alerts trusted contacts and nearby authorities the moment you need help.
+        </p>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-grid">
-                <div class="footer-brand">
-                    <a href="#" class="nav-logo">
-                        <div class="logo-icon">
-                            <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
-                                <circle cx="16" cy="16" r="14" stroke="url(#logoGrad2)" stroke-width="2.5" />
-                                <path d="M16 8C12 8 9 11 9 15C9 21 16 26 16 26C16 26 23 21 23 15C23 11 20 8 16 8Z"
-                                    fill="url(#logoGrad2)" />
-                                <circle cx="16" cy="15" r="3" fill="#0a0e1a" />
-                                <defs>
-                                    <linearGradient id="logoGrad2" x1="4" y1="4" x2="28" y2="28">
-                                        <stop stop-color="#6c63ff" />
-                                        <stop offset="1" stop-color="#e040fb" />
-                                    </linearGradient>
-                                </defs>
-                            </svg>
-                        </div>
-                        <span class="logo-text">Safe<span class="logo-accent">Zone</span></span>
-                    </a>
-                    <p class="footer-tagline">AI-powered safety for every woman, everywhere.</p>
-                </div>
-                <div class="footer-links-group">
-                    <h4>Product</h4>
-                    <a href="#features">Features</a>
-                    <a href="#risk-map">Risk Map</a>
-                    <a href="#guardian">AI Guardian</a>
-                    <a href="#download">Download</a>
-                </div>
-                <div class="footer-links-group">
-                    <h4>Resources</h4>
-                    <a href="#">Safety Tips</a>
-                    <a href="#">Blog</a>
-                    <a href="#">API Docs</a>
-                    <a href="#">Community</a>
-                </div>
-                <div class="footer-links-group">
-                    <h4>Company</h4>
-                    <a href="#">About Us</a>
-                    <a href="#">Careers</a>
-                    <a href="#">Privacy Policy</a>
-                    <a href="#">Terms of Service</a>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2026 SafeZone AI Guardian. All rights reserved. Made with ❤️ for women's safety.</p>
-                <div class="footer-socials">
-                    <a href="#" aria-label="Twitter">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                            <path
-                                d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-                        </svg>
-                    </a>
-                    <a href="#" aria-label="Instagram">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2">
-                            <rect x="2" y="2" width="20" height="20" rx="5" />
-                            <circle cx="12" cy="12" r="5" />
-                            <circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" />
-                        </svg>
-                    </a>
-                    <a href="#" aria-label="LinkedIn">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                            <path
-                                d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-                        </svg>
-                    </a>
-                </div>
-            </div>
+        <div class="hero-actions">
+          <button class="btn btn-primary btn-lg" onclick="showScreen('signup')">Get Protected — It's Free</button>
+          <button class="btn btn-ghost btn-lg" onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'})">See How It Works</button>
         </div>
-    </footer>
 
-    <!-- Emergency Alert Modal -->
-    <div class="modal-overlay" id="emergency-modal">
-        <div class="modal emergency-modal">
-            <div class="modal-close" id="modal-close">&times;</div>
-            <div class="emergency-header">
-                <div class="emergency-pulse-ring">
-                    <div class="emergency-icon">🚨</div>
-                </div>
-                <h2>Emergency SOS Activated</h2>
-            </div>
-            <div class="emergency-body">
-                <div class="emergency-info">
-                    <div class="info-row">
-                        <span class="info-label">Status</span>
-                        <span class="info-value alert-active">SENDING ALERTS</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">Location</span>
-                        <span class="info-value" id="user-location">Detecting...</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">Contacts Notified</span>
-                        <span class="info-value">3 of 3</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">Audio Recording</span>
-                        <span class="info-value recording-active">● Recording</span>
-                    </div>
-                </div>
-                <div class="emergency-contacts">
-                    <div class="contact-item notified">
-                        <div class="contact-avatar">👩</div>
-                        <div class="contact-info">
-                            <div class="contact-name">Mom</div>
-                            <div class="contact-status">✓ Alert Sent</div>
-                        </div>
-                    </div>
-                    <div class="contact-item notified">
-                        <div class="contact-avatar">👨</div>
-                        <div class="contact-info">
-                            <div class="contact-name">Dad</div>
-                            <div class="contact-status">✓ Alert Sent</div>
-                        </div>
-                    </div>
-                    <div class="contact-item notified">
-                        <div class="contact-avatar">👮</div>
-                        <div class="contact-info">
-                            <div class="contact-name">Local Police</div>
-                            <div class="contact-status">✓ Alert Sent</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <button class="btn btn-danger" id="cancel-sos">Cancel SOS</button>
+        <div class="hero-trust">
+          <div class="trust-item"><span>🔒</span><span>End-to-end encrypted</span></div>
+          <div class="trust-item"><span>📡</span><span>Real-time GPS</span></div>
+          <div class="trust-item"><span>🆓</span><span>Always free</span></div>
         </div>
+      </div>
+
+      <!-- RIGHT VISUAL -->
+      <div class="hero-visual">
+        <div class="hero-card-wrap">
+          <div class="hero-card">
+            <svg id="hero-svg" viewBox="0 0 320 260" fill="none" xmlns="http://www.w3.org/2000/svg"></svg>
+          </div>
+          <!-- Status floating badges -->
+          <div class="float-badge float-badge-safe">
+            <div class="badge-icon" style="background:rgba(31,207,122,0.15);border:1px solid rgba(31,207,122,0.3)">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <path d="M7 1L11 3L11 7Q11 10 7 12Q3 10 3 7L3 3Z" fill="none" stroke="#1fcf7a" stroke-width="1.2"/>
+                <path d="M5 7L6.5 8.5L9 6" stroke="#1fcf7a" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div>
+              <div class="badge-label" style="color:#1fcf7a">YOU'RE SAFE</div>
+              <div class="badge-sub">Journey active</div>
+            </div>
+          </div>
+          <div class="float-badge float-badge-live">
+            <div class="badge-icon" style="background:rgba(245,49,127,0.12);border:1px solid rgba(245,49,127,0.25)">
+              <div class="badge-dot"></div>
+            </div>
+            <div>
+              <div class="badge-label" style="color:#f5317f">LIVE TRACKING</div>
+              <div class="badge-sub">Location shared</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /.hero-inner -->
+
+    <!-- STATS STRIP -->
+    <div class="stats-strip">
+      <div class="stat-cell"><div class="stat-num">50k+</div><div class="stat-label">Women Protected</div></div>
+      <div class="stat-cell"><div class="stat-num">99.8%</div><div class="stat-label">Alert Delivery Rate</div></div>
+      <div class="stat-cell"><div class="stat-num">&lt;3s</div><div class="stat-label">Emergency Response</div></div>
+    </div>
+  </section>
+
+  <!-- WHY SECTION -->
+  <section class="section" style="padding-top:60px">
+    <div class="section-center">
+      <div class="section-eyebrow">Why SafeZone</div>
+      <h2 class="section-h2">Protection that feels like a friend</h2>
     </div>
 
-    <!-- Fake Call Modal -->
-    <div class="modal-overlay" id="fakecall-modal">
-        <div class="modal fakecall-modal">
-            <div class="fakecall-screen">
-                <div class="caller-avatar-ring">
-                    <div class="caller-avatar">👩‍💼</div>
-                </div>
-                <div class="caller-name">Mom</div>
-                <div class="caller-label">Incoming Call...</div>
-                <div class="call-actions">
-                    <button class="call-btn decline" id="decline-call">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
-                            <path
-                                d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z" />
-                        </svg>
-                    </button>
-                    <button class="call-btn accept" id="accept-call">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
-                            <path
-                                d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z" />
-                        </svg>
-                    </button>
-                </div>
+    <!-- Row 1 -->
+    <div class="why-row animate-fade-up">
+      <div class="why-illust-wrap">
+        <div class="why-illust" style="background:linear-gradient(135deg,rgba(245,49,127,0.07),rgba(90,26,58,0.1))">
+          <svg id="shield-svg" viewBox="0 0 280 260" fill="none" xmlns="http://www.w3.org/2000/svg"></svg>
+        </div>
+        <div class="why-illust-ring"></div>
+        <div class="why-corner-badge">🛡️</div>
+      </div>
+      <div class="why-text">
+        <div class="why-eyebrow" style="color:#1fcf7a">Always shielded</div>
+        <h3 class="why-h3">A shield that never sleeps</h3>
+        <p class="why-p">SafeZone wraps a digital shield around every journey. Whether you're commuting at night, travelling solo, or just walking home — our AI stays alert so you don't have to.</p>
+        <div class="check-list">
+          <div class="check-item stagger-1">
+            <div class="check-dot"><svg width="9" height="9" viewBox="0 0 9 9"><path d="M2 4.5L3.8 6.3L7 3" stroke="#1fcf7a" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></div>
+            <span class="check-text">AI detects distress in real time — voice, keyword or grip</span>
+          </div>
+          <div class="check-item stagger-2">
+            <div class="check-dot"><svg width="9" height="9" viewBox="0 0 9 9"><path d="M2 4.5L3.8 6.3L7 3" stroke="#1fcf7a" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></div>
+            <span class="check-text">Automatic SOS to trusted contacts in under 3 seconds</span>
+          </div>
+          <div class="check-item stagger-3">
+            <div class="check-dot"><svg width="9" height="9" viewBox="0 0 9 9"><path d="M2 4.5L3.8 6.3L7 3" stroke="#1fcf7a" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></div>
+            <span class="check-text">Live GPS location shared silently with one tap</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 2 -->
+    <div class="why-row reverse animate-fade-up">
+      <div class="why-text">
+        <div class="why-eyebrow" style="color:#c47fbf">Community strength</div>
+        <h3 class="why-h3">Together, every path gets safer</h3>
+        <p class="why-p">Built by women, for women. Every danger zone you report protects someone else walking the same street tonight. Our community safety map grows smarter every day.</p>
+        <div class="stats-cluster">
+          <div class="stat-chip" style="background:rgba(196,176,216,0.08);border:1px solid rgba(196,176,216,0.18)">
+            <div class="stat-chip-num" style="color:#c47fbf">50k+</div>
+            <div class="stat-chip-lab">Active users</div>
+          </div>
+          <div class="stat-chip" style="background:rgba(31,207,122,0.07);border:1px solid rgba(31,207,122,0.18)">
+            <div class="stat-chip-num" style="color:#1fcf7a">12k+</div>
+            <div class="stat-chip-lab">Safe journeys today</div>
+          </div>
+          <div class="stat-chip" style="background:rgba(245,49,127,0.07);border:1px solid rgba(245,49,127,0.18)">
+            <div class="stat-chip-num" style="color:#f5317f">3k+</div>
+            <div class="stat-chip-lab">Zones reported</div>
+          </div>
+        </div>
+      </div>
+      <div class="why-illust-wrap">
+        <div class="why-illust" style="background:linear-gradient(135deg,rgba(196,176,216,0.06),rgba(90,26,58,0.1));border-color:rgba(196,176,216,0.15)">
+          <svg id="community-svg" viewBox="0 0 300 240" fill="none" xmlns="http://www.w3.org/2000/svg"></svg>
+        </div>
+        <div class="why-illust-ring" style="border-color:rgba(196,176,216,0.12)"></div>
+        <div class="why-corner-badge" style="background:linear-gradient(135deg,#c47fbf,#8a4a9a);left:-14px;right:auto">💜</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES GRID -->
+  <section class="section" id="features" style="padding-top:56px;padding-bottom:56px">
+    <div class="section-center">
+      <div class="section-eyebrow">Everything you need</div>
+      <h2 class="section-h2">Built for real-world safety</h2>
+    </div>
+    <div class="features-grid" id="features-grid"></div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="section" style="padding-top:56px;padding-bottom:56px">
+    <div class="section-center">
+      <div class="section-eyebrow">Simple as 1–2–3</div>
+      <h2 class="section-h2">How SafeZone protects you</h2>
+    </div>
+    <div class="how-inner">
+      <div class="how-steps" id="how-steps"></div>
+      <div class="how-illust">
+        <svg id="ai-svg" viewBox="0 0 280 240" fill="none" xmlns="http://www.w3.org/2000/svg"></svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- MAP PREVIEW -->
+  <div class="map-preview">
+    <div class="map-frame">
+      <div class="map-topbar">
+        <div style="display:flex;align-items:center">
+          <div class="map-dots">
+            <div class="map-dot" style="background:#e8184e"></div>
+            <div class="map-dot" style="background:#f5a623"></div>
+            <div class="map-dot" style="background:#1fcf7a"></div>
+          </div>
+          <span class="map-title">SafeZone — Live Safety Map</span>
+        </div>
+        <div class="live-pill"><div class="live-dot"></div>LIVE</div>
+      </div>
+      <div class="map-body">
+        <canvas id="landing-map" class="map-canvas-wrap"></canvas>
+      </div>
+      <div class="map-legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#1fcf7a"></div>Safe zone</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#f5a623"></div>Moderate risk</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#e8184e"></div>Danger zone</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#7799ff"></div>Police station</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA BAND -->
+  <div class="cta-band">
+    <div class="cta-watermark">
+      <svg viewBox="0 0 280 260" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M140 20L240 60L240 140Q240 200 140 240Q40 200 40 140L40 60Z" fill="white"/>
+      </svg>
+    </div>
+    <div class="cta-icon-cluster">
+      <div class="cta-icon" style="background:rgba(245,49,127,0.12);border:1px solid rgba(245,49,127,0.3)">🛡️</div>
+      <div class="cta-icon" style="background:rgba(31,207,122,0.1);border:1px solid rgba(31,207,122,0.25)">📍</div>
+      <div class="cta-icon" style="background:rgba(196,176,216,0.08);border:1px solid rgba(196,176,216,0.2)">🎤</div>
+    </div>
+    <div class="cta-eyebrow">Ready to feel safe?</div>
+    <h2 class="cta-h2">Your safety journey starts now</h2>
+    <p class="cta-p">Join thousands of women who travel with confidence knowing SafeZone has their back, every step of the way.</p>
+    <button class="btn btn-primary btn-lg" onclick="showScreen('signup')" style="box-shadow:0 8px 32px rgba(245,49,127,0.35)">
+      Get Started — Free
+    </button>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="nav-logo" style="cursor:default">
+      <div class="logo-mark" style="width:26px;height:26px;font-size:14px">🛡️</div>
+      <span style="font-size:14px;font-weight:700;color:#b09bc0">SafeZone AI Guardian</span>
+    </div>
+    <div class="footer-copy">Protecting women, one journey at a time.</div>
+  </footer>
+
+</div><!-- /.landing -->
+</div><!-- #screen-landing -->
+
+
+<!-- ══════════════════════════════════════════════
+     SCREEN: LOGIN
+══════════════════════════════════════════════ -->
+<div id="screen-login" class="screen">
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <div class="auth-logo">
+        <div class="auth-logo-icon">🛡️</div>
+        <div>
+          <div class="logo-name">SafeZone</div>
+          <div class="logo-tag">AI GUARDIAN</div>
+        </div>
+      </div>
+      <h2 class="auth-h2">Welcome back</h2>
+      <p class="auth-sub">Sign in to stay safe and protected</p>
+      <div id="login-error" class="auth-error" style="display:none"></div>
+      <div class="field-group">
+        <label class="field-label">Email address</label>
+        <input class="field-input" type="email" id="login-email" placeholder="you@example.com"/>
+      </div>
+      <div class="field-group" style="margin-bottom:24px">
+        <label class="field-label">Password</label>
+        <div class="field-input-wrap">
+          <input class="field-input" type="password" id="login-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/>
+          <button class="field-eye" onclick="togglePw('login-pass',this)">👁</button>
+        </div>
+      </div>
+      <button class="btn btn-primary btn-full" onclick="doLogin()">Sign in securely</button>
+      <p class="auth-toggle">No account yet? <a onclick="showScreen('signup')">Create one</a></p>
+      <div class="auth-hint">💡 Demo: enter any email + password to continue</div>
+    </div>
+  </div>
+</div><!-- #screen-login -->
+
+
+<!-- ══════════════════════════════════════════════
+     SCREEN: SIGNUP
+══════════════════════════════════════════════ -->
+<div id="screen-signup" class="screen">
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <div class="auth-logo">
+        <div class="auth-logo-icon">🛡️</div>
+        <div>
+          <div class="logo-name">SafeZone</div>
+          <div class="logo-tag">AI GUARDIAN</div>
+        </div>
+      </div>
+      <h2 class="auth-h2">Create account</h2>
+      <p class="auth-sub">Join and start your safety journey</p>
+      <div id="signup-error" class="auth-error" style="display:none"></div>
+      <div class="field-group">
+        <label class="field-label">Full name</label>
+        <input class="field-input" type="text" id="signup-name" placeholder="Your full name"/>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Email address</label>
+        <input class="field-input" type="email" id="signup-email" placeholder="you@example.com"/>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Phone number</label>
+        <input class="field-input" type="tel" id="signup-phone" placeholder="+91 98765 43210"/>
+      </div>
+      <div class="field-group" style="margin-bottom:24px">
+        <label class="field-label">Password</label>
+        <div class="field-input-wrap">
+          <input class="field-input" type="password" id="signup-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doSignup()"/>
+          <button class="field-eye" onclick="togglePw('signup-pass',this)">👁</button>
+        </div>
+      </div>
+      <button class="btn btn-primary btn-full" onclick="doSignup()">Create account</button>
+      <p class="auth-toggle">Already have an account? <a onclick="showScreen('login')">Sign in</a></p>
+      <div class="auth-hint">💡 Demo: enter any name, email + password to continue</div>
+    </div>
+  </div>
+</div><!-- #screen-signup -->
+
+
+<!-- ══════════════════════════════════════════════
+     SCREEN: APP
+══════════════════════════════════════════════ -->
+<div id="screen-app" class="screen">
+
+  <!-- TOP BAR -->
+  <div class="app-topbar">
+    <div class="topbar-logo">
+      <div class="topbar-icon">🛡️</div>
+      <div>
+        <div style="font-size:15px;font-weight:800;letter-spacing:-0.3px">SafeZone</div>
+        <div style="font-size:9px;color:var(--muted);letter-spacing:1.2px;line-height:1">AI GUARDIAN</div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div id="topbar-live" class="live-pill" style="display:none"><div class="live-dot"></div>LIVE</div>
+      <div id="topbar-emerg" class="badge badge-red" style="display:none">⚠ EMERGENCY</div>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="app-content" id="app-content">
+
+    <!-- HOME TAB -->
+    <div class="tab-panel active" id="tab-home">
+      <div id="emergency-bar" style="display:none" class="emergency-bar">
+        <div style="display:flex;align-items:center;gap:10px">
+          <span style="font-size:18px">🚨</span>
+          <div>
+            <div style="font-size:13px;font-weight:700;color:var(--rose)">EMERGENCY ACTIVE</div>
+            <div style="font-size:11px;color:#f5a">Contacts alerted · Location shared · Recording</div>
+          </div>
+        </div>
+        <button class="btn btn-danger btn-sm" onclick="deactivateEmergency()">Cancel</button>
+      </div>
+
+      <!-- SOS CARD -->
+      <div class="card" id="sos-card">
+        <div class="card-label">Emergency SOS</div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:10px;padding:18px 0" id="sos-normal">
+          <button class="sos-btn" id="sos-btn" onclick="handleSOS()">SOS</button>
+          <div style="font-size:12px;color:var(--dim)" id="sos-hint">Tap to activate emergency alert</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:12px;padding:14px 0;display:none" id="sos-countdown">
+          <div class="sos-countdown">
+            <div class="sos-count-num" id="sos-count">5</div>
+          </div>
+          <div style="font-size:13px;color:#f5a0b0" id="sos-count-text">Activating in 5s…</div>
+          <button class="btn btn-ghost btn-sm" onclick="cancelSOS()">Cancel</button>
+        </div>
+      </div>
+
+      <!-- STATUS ROW -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="card" style="display:flex;flex-direction:column;align-items:center;gap:6px">
+          <div class="card-label">Area Risk</div>
+          <div class="risk-gauge" id="risk-gauge"></div>
+        </div>
+        <div class="card" id="journey-card">
+          <div class="card-label">Journey</div>
+          <div id="journey-idle">
+            <div class="badge badge-muted" style="margin-bottom:10px">● IDLE</div><br>
+            <button class="btn btn-primary btn-sm" onclick="startJourney()">Start Journey</button>
+          </div>
+          <div id="journey-active" style="display:none">
+            <div class="badge badge-green" style="margin-bottom:8px">● ACTIVE</div>
+            <div class="mono" style="font-size:24px;font-weight:800;color:var(--green);letter-spacing:1px;margin:6px 0" id="journey-timer">00:00</div>
+            <button class="btn btn-ghost btn-sm" onclick="stopJourney()">Stop</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI GUARDIAN -->
+      <div class="card" id="ai-card">
+        <div class="card-label">AI Guardian — Distress Detection</div>
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+          <button id="ai-listen-btn" onclick="toggleAI()" style="padding:8px 16px;border-radius:9px;border:none;cursor:pointer;font-family:inherit;font-weight:700;font-size:12px;transition:all 0.2s;background:rgba(255,255,255,0.05);color:var(--muted)">🎤 Start Listening</button>
+          <div class="wave-wrap" id="ai-wave" style="display:none"></div>
+          <span id="ai-monitoring" style="font-size:11px;color:var(--muted);margin-left:auto;display:none">Monitoring…</span>
+        </div>
+        <div style="position:relative">
+          <input class="field-input" id="ai-input" placeholder='Type "help", "stop", "scared", "leave me alone"…' oninput="onAIInput(this.value)"/>
+          <button id="ai-clear-btn" onclick="clearAI()" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--dim);font-size:16px;padding:4px;display:none">×</button>
+        </div>
+        <div id="ai-typing" class="typing-dots" style="display:none">
+          <div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>
+          <span style="font-size:12px;color:var(--muted);margin-left:8px">AI Guardian is analysing…</span>
+        </div>
+        <div id="ai-response"></div>
+      </div>
+
+      <!-- CONTACTS -->
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <div class="card-label" style="margin:0">Trusted Contacts</div>
+          <button class="btn btn-soft btn-sm" onclick="toggleAddContact()">+ Add</button>
+        </div>
+        <div id="add-contact-form" style="display:none;margin-bottom:14px;padding:12px;background:rgba(255,255,255,0.02);border-radius:10px;border:1px solid var(--border)">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+            <input class="field-input" id="new-contact-name" placeholder="Name"/>
+            <input class="field-input" id="new-contact-phone" placeholder="Phone"/>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="saveContact()">Save Contact</button>
+        </div>
+        <div id="contacts-list" style="display:flex;flex-direction:column;gap:8px"></div>
+      </div>
+    </div><!-- #tab-home -->
+
+
+    <!-- MAP TAB -->
+    <div class="tab-panel" id="tab-map">
+      <!-- Canvas Map -->
+      <div style="height:260px;border-radius:14px;overflow:hidden;border:1px solid var(--border);position:relative">
+        <canvas id="app-map" style="width:100%;height:100%;display:block"></canvas>
+        <div id="map-coords" style="position:absolute;top:10px;left:10px;background:rgba(12,8,16,0.88);backdrop-filter:blur(8px);border-radius:9px;padding:5px 10px;font-size:11px;color:var(--text-sub);border:1px solid var(--border)"></div>
+        <div id="map-live-badge" style="position:absolute;top:10px;right:10px;display:none" class="live-pill"><div class="live-dot"></div>LIVE</div>
+        <div id="zone-counts" style="position:absolute;bottom:10px;left:10px;display:flex;gap:6px"></div>
+      </div>
+
+      <!-- Legend -->
+      <div class="card">
+        <div class="card-label">Zone legend</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div class="legend-item"><div class="legend-dot" style="background:#1fcf7a"></div><span style="color:var(--text-sub);font-weight:600">Safe</span></div>
+          <div class="legend-item"><div class="legend-dot" style="background:#f5a623"></div><span style="color:var(--text-sub);font-weight:600">Moderate</span></div>
+          <div class="legend-item"><div class="legend-dot" style="background:#e8611a"></div><span style="color:var(--text-sub);font-weight:600">High Risk</span></div>
+          <div class="legend-item"><div class="legend-dot" style="background:#e8184e"></div><span style="color:var(--text-sub);font-weight:600">Dangerous</span></div>
+        </div>
+      </div>
+
+      <!-- Police -->
+      <div class="card">
+        <div class="card-label">Nearby police stations</div>
+        <div id="police-list" style="display:flex;flex-direction:column;gap:8px"></div>
+      </div>
+
+      <!-- Report Incident -->
+      <div class="card" id="report-card">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+          <div class="card-label" style="margin:0">🚨 Report an incident</div>
+          <div style="display:flex;gap:5px" id="report-steps-dots"></div>
+        </div>
+        <div id="report-form-view"></div>
+      </div>
+    </div><!-- #tab-map -->
+
+
+    <!-- ALERTS TAB -->
+    <div class="tab-panel" id="tab-alerts">
+      <div id="emerg-alert-card" style="display:none" class="card" style="background:rgba(232,24,78,0.07);border-color:rgba(232,24,78,0.25)">
+        <div class="card-label">Auto-generated police alert</div>
+        <div id="emerg-alert-body" style="background:rgba(0,0,0,0.3);border-radius:10px;padding:14px;font-family:'DM Mono',monospace;font-size:12px;line-height:1.8;color:var(--text)"></div>
+      </div>
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <div class="card-label" style="margin:0">Activity log</div>
+          <button onclick="clearLog()" style="background:none;border:none;cursor:pointer;color:var(--dim);font-size:12px">Clear all</button>
+        </div>
+        <div id="activity-log">
+          <div style="text-align:center;padding:28px 0;color:var(--dim);font-size:13px">No activity yet</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-label">Evidence recordings</div>
+        <div id="rec-active" style="display:none;align-items:center;gap:10px;padding:10px 14px;background:rgba(245,49,127,0.08);border:1px solid rgba(245,49,127,0.2);border-radius:10px;margin-bottom:12px">
+          <div class="animate-blink" style="width:9px;height:9px;border-radius:50%;background:var(--pink);flex-shrink:0"></div>
+          <span style="font-size:13px;color:#f5a0b8;font-weight:600">Recording in progress…</span>
+          <div class="wave-wrap" id="rec-wave"></div>
+        </div>
+        <div id="recordings-list">
+          <div style="text-align:center;padding:28px 0;color:var(--dim);font-size:13px">No recordings yet</div>
+        </div>
+      </div>
+    </div><!-- #tab-alerts -->
+
+
+    <!-- PROFILE TAB -->
+    <div class="tab-panel" id="tab-profile">
+      <!-- Profile card -->
+      <div class="card" style="text-align:center;padding-top:28px;padding-bottom:24px">
+        <div id="profile-av" style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--pink),var(--rose));display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:24px;font-weight:800;color:#fff;box-shadow:0 0 0 4px rgba(245,49,127,0.15);animation:pulse-ring 2.5s ease infinite"></div>
+        <div id="profile-view">
+          <div id="profile-name-disp" style="font-size:20px;font-weight:800;color:var(--text);margin-bottom:3px"></div>
+          <div id="profile-email-disp" style="font-size:13px;color:var(--muted);margin-bottom:2px"></div>
+          <div id="profile-phone-disp" style="font-size:13px;color:var(--muted);margin-bottom:16px"></div>
+          <button class="btn btn-soft btn-sm" onclick="toggleProfileEdit(true)">✏️ Edit Profile</button>
+        </div>
+        <div id="profile-edit-view" style="display:none;text-align:left;margin-bottom:14px">
+          <div class="field-group"><label class="field-label">Full name</label><input class="field-input" id="edit-name" placeholder="Your name"/></div>
+          <div class="field-group"><label class="field-label">Email</label><input class="field-input" id="edit-email" placeholder="Email"/></div>
+          <div class="field-group"><label class="field-label">Phone</label><input class="field-input" id="edit-phone" placeholder="Phone"/></div>
+          <div style="display:flex;gap:8px;margin-top:4px">
+            <button class="btn btn-ghost btn-sm" style="flex:1" onclick="toggleProfileEdit(false)">Cancel</button>
+            <button class="btn btn-primary btn-sm" style="flex:1" onclick="saveProfile()">Save</button>
+          </div>
+        </div>
+        <div class="profile-stats">
+          <div><div class="profile-stat-num" id="ps-contacts">3</div><div class="profile-stat-lab">Contacts</div></div>
+          <div><div class="profile-stat-num" id="ps-recs">0</div><div class="profile-stat-lab">Recordings</div></div>
+          <div><div class="profile-stat-num" id="ps-reports">0</div><div class="profile-stat-lab">Reports</div></div>
+        </div>
+      </div>
+
+      <!-- Safety stats -->
+      <div class="card">
+        <div class="card-label">Safety stats</div>
+        <div class="setting-row"><span style="font-size:13px;color:var(--muted)">Safe journeys</span><span style="font-size:16px;font-weight:800;color:var(--green);font-family:'DM Mono',monospace">24</span></div>
+        <div class="setting-row"><span style="font-size:13px;color:var(--muted)">Danger zones avoided</span><span style="font-size:16px;font-weight:800;color:var(--amber);font-family:'DM Mono',monospace">7</span></div>
+        <div class="setting-row" style="border:none"><span style="font-size:13px;color:var(--muted)">Emergency activations</span><span id="stat-emerg" style="font-size:16px;font-weight:800;color:var(--rose);font-family:'DM Mono',monospace">0</span></div>
+      </div>
+
+      <!-- General settings -->
+      <div class="card">
+        <div class="card-label">General settings</div>
+        <div class="setting-row">
+          <span style="font-size:18px">🔔</span>
+          <div style="flex:1"><div class="setting-title">Push notifications</div><div class="setting-sub">Get alerts and safety updates</div></div>
+          <div class="toggle-switch on" id="tog-push" onclick="toggleSetting('push')"><div class="toggle-knob"></div></div>
+        </div>
+        <div class="setting-row">
+          <span style="font-size:18px">📍</span>
+          <div style="flex:1"><div class="setting-title">Location sharing</div><div class="setting-sub">Share live location with contacts</div></div>
+          <div class="toggle-switch on" id="tog-loc" onclick="toggleSetting('loc')"><div class="toggle-knob"></div></div>
+        </div>
+        <div class="setting-row">
+          <span style="font-size:18px">🎙️</span>
+          <div style="flex:1"><div class="setting-title">Auto-record on SOS</div><div class="setting-sub">Start recording when emergency activates</div></div>
+          <div class="toggle-switch on" id="tog-rec" onclick="toggleSetting('rec')"><div class="toggle-knob"></div></div>
+        </div>
+        <div class="setting-row" style="border:none">
+          <span style="font-size:18px">🔒</span>
+          <div style="flex:1"><div class="setting-title">Privacy mode</div><div class="setting-sub">Hide your status from non-contacts</div></div>
+          <div class="toggle-switch" id="tog-priv" onclick="toggleSetting('priv')"><div class="toggle-knob"></div></div>
+        </div>
+      </div>
+
+      <!-- Travel safety settings -->
+      <div class="card" id="travel-card">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+          <span style="font-size:16px">🌙</span>
+          <div style="flex:1">
+            <div style="font-size:12px;font-weight:700;letter-spacing:1px;color:var(--pink);text-transform:uppercase">Travel Safety Mode</div>
+            <div style="font-size:11px;color:var(--muted)">Enable before travelling at night or in unsafe areas</div>
+          </div>
+        </div>
+        <!-- Listening mode -->
+        <div id="listening-wrap" style="padding:14px;border-radius:12px;margin-bottom:10px;background:rgba(255,255,255,0.02);border:1px solid var(--border);transition:all 0.2s">
+          <div style="display:flex;align-items:flex-start;gap:12px">
+            <span style="font-size:22px;margin-top:2px">🎤</span>
+            <div style="flex:1">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+                <div style="font-size:14px;font-weight:700;color:var(--text)">Listening Mode</div>
+                <div class="toggle-switch" id="tog-listen" onclick="toggleListening()"><div class="toggle-knob"></div></div>
+              </div>
+              <div style="font-size:12px;color:var(--muted);line-height:1.55">Keeps AI Guardian always listening for distress keywords. Auto-triggers SOS when danger is detected.</div>
+              <div id="listening-active-badge" style="display:none;margin-top:8px;display:none;align-items:center;gap:6px;padding:5px 10px;border-radius:8px;background:rgba(245,49,127,0.12);width:fit-content">
+                <div class="animate-blink" style="width:6px;height:6px;border-radius:50%;background:var(--pink)"></div>
+                <span style="font-size:11px;font-weight:700;color:var(--pink)">ACTIVE — Listening now</span>
+              </div>
             </div>
+          </div>
         </div>
-    </div>
-
-    <!-- Report Danger Modal -->
-    <div class="modal-overlay" id="report-modal">
-        <div class="modal report-modal">
-            <div class="modal-close" id="report-close">&times;</div>
-            <h2>Report Unsafe Area</h2>
-            <p>Help your community by reporting a dangerous location. Your report is anonymous.</p>
-            <form id="report-form">
-                <div class="form-group">
-                    <label for="report-type">Type of Danger</label>
-                    <select id="report-type">
-                        <option>Harassment</option>
-                        <option>Poor Lighting</option>
-                        <option>Stalking</option>
-                        <option>Theft/Robbery</option>
-                        <option>Other</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="report-severity">Severity Level</label>
-                    <div class="severity-selector">
-                        <button type="button" class="severity-btn moderate" data-level="moderate">Moderate</button>
-                        <button type="button" class="severity-btn caution active" data-level="caution">Caution</button>
-                        <button type="button" class="severity-btn danger" data-level="danger">High Risk</button>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="report-desc">Description (optional)</label>
-                    <textarea id="report-desc" rows="3" placeholder="Describe what happened..."></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary btn-full">Submit Report</button>
-            </form>
+        <!-- Grip SOS -->
+        <div id="grip-wrap" style="padding:14px;border-radius:12px;background:rgba(255,255,255,0.02);border:1px solid var(--border);transition:all 0.2s">
+          <div style="display:flex;align-items:flex-start;gap:12px">
+            <span style="font-size:22px;margin-top:2px">✊</span>
+            <div style="flex:1">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+                <div style="font-size:14px;font-weight:700;color:var(--text)">Grip Pressure SOS</div>
+                <div class="toggle-switch" id="tog-grip" onclick="toggleGrip()"><div class="toggle-knob"></div></div>
+              </div>
+              <div style="font-size:12px;color:var(--muted);line-height:1.55;margin-bottom:6px">Tap the screen 5× rapidly within 2 seconds to trigger emergency SOS — even if you can't speak or unlock your phone.</div>
+              <div style="padding:8px 10px;border-radius:8px;background:rgba(245,166,35,0.08);border:1px solid rgba(245,166,35,0.2)">
+                <div style="font-size:11px;color:var(--amber);font-weight:600;margin-bottom:2px">⚠️ Enable only before travel</div>
+                <div style="font-size:11px;color:var(--muted)">Only turn this on when you need it — walking alone at night or in unfamiliar areas.</div>
+              </div>
+              <div id="grip-active-badge" style="display:none;margin-top:8px;align-items:center;gap:6px;padding:5px 10px;border-radius:8px;background:rgba(232,24,78,0.12);width:fit-content">
+                <div class="animate-blink" style="width:6px;height:6px;border-radius:50%;background:var(--rose)"></div>
+                <span style="font-size:11px;font-weight:700;color:var(--rose)">ARMED — tap screen 5× to trigger</span>
+              </div>
+            </div>
+          </div>
         </div>
-    </div>
+        <div id="travel-active-notice" style="display:none;margin-top:10px;padding:10px 12px;border-radius:10px;font-size:12px;background:rgba(245,49,127,0.06);border:1px solid rgba(245,49,127,0.15);color:var(--text-sub);display:none">
+          🛡️ Travel Safety Mode is active. Remember to disable these when you're home safe.
+        </div>
+      </div>
 
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="app.js"></script>
+      <button class="btn btn-ghost btn-full" onclick="logout()" style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:4px">
+        🚪 Sign out
+      </button>
+    </div><!-- #tab-profile -->
+
+  </div><!-- #app-content -->
+
+  <!-- BOTTOM NAV -->
+  <nav class="app-nav">
+    <button class="nav-tab active" id="navbtn-home" onclick="switchTab('home')">
+      <div class="nav-tab-icon">🏠</div>
+      <span class="nav-tab-label">Home</span>
+      <div class="nav-underline"></div>
+    </button>
+    <button class="nav-tab" id="navbtn-map" onclick="switchTab('map')">
+      <div class="nav-tab-icon">🗺️</div>
+      <span class="nav-tab-label">Map</span>
+      <div class="nav-underline"></div>
+    </button>
+    <button class="nav-tab" id="navbtn-alerts" onclick="switchTab('alerts')">
+      <div class="nav-tab-icon" style="position:relative">🔔<div class="nav-badge" id="alerts-badge" style="display:none">0</div></div>
+      <span class="nav-tab-label">Alerts</span>
+      <div class="nav-underline"></div>
+    </button>
+    <button class="nav-tab" id="navbtn-profile" onclick="switchTab('profile')">
+      <div class="nav-tab-icon">👤</div>
+      <span class="nav-tab-label">Profile</span>
+      <div class="nav-underline"></div>
+    </button>
+  </nav>
+
+</div><!-- #screen-app -->
+
+
+<!-- ══════════════════════════════════════════════
+     CALL MODAL (global overlay)
+══════════════════════════════════════════════ -->
+<div id="call-modal" class="call-modal" style="display:none">
+  <div class="call-topbar">
+    <div style="font-size:13px;font-weight:700;color:var(--muted)">SafeZone</div>
+    <div id="call-enc" class="live-pill" style="display:none"><div class="live-dot" style="background:var(--green)"></div>ENCRYPTED</div>
+  </div>
+  <div id="call-avatar" class="call-avatar ringing"></div>
+  <div id="call-name" class="call-name"></div>
+  <div id="call-phone-disp" class="call-phone"></div>
+  <div id="call-status-text" class="call-status">
+    <span style="display:flex;align-items:center;gap:6px">
+      <span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>
+      Calling…
+    </span>
+  </div>
+  <div id="call-duration" class="call-duration" style="display:none;margin-bottom:40px">00:00</div>
+  <div class="call-controls">
+    <div class="call-ctrl">
+      <button class="call-ctrl-btn">🔇</button>
+      <span class="call-ctrl-label">Mute</span>
+    </div>
+    <div class="call-ctrl">
+      <button class="call-ctrl-btn">🔊</button>
+      <span class="call-ctrl-label">Speaker</span>
+    </div>
+    <div class="call-ctrl">
+      <button class="call-ctrl-btn end" onclick="endCall()">📵</button>
+      <span class="call-ctrl-label">End</span>
+    </div>
+    <div class="call-ctrl">
+      <button class="call-ctrl-btn">⌨️</button>
+      <span class="call-ctrl-label">Keypad</span>
+    </div>
+    <div class="call-ctrl">
+      <button class="call-ctrl-btn" style="background:rgba(245,49,127,0.12);border:1px solid rgba(245,49,127,0.2)" onclick="shareLocationDuringCall()">📍</button>
+      <span class="call-ctrl-label" style="color:var(--pink)">Location</span>
+    </div>
+  </div>
+  <div class="call-note" id="call-note"></div>
+</div><!-- #call-modal -->
+
+<!-- GRIP SOS OVERLAY -->
+<div id="grip-overlay" style="display:none" class="grip-overlay">
+  <div class="grip-ring-wrap">
+    <div class="grip-ring"></div>
+    <div class="grip-ring"></div>
+    <div class="grip-icon">✊</div>
+  </div>
+  <div style="font-size:18px;font-weight:800;color:var(--rose)">GRIP SOS DETECTED</div>
+  <div style="font-size:13px;color:#f5a0b0;text-align:center">
+    Emergency activating in 3 seconds…<br>
+    <span style="font-size:11px;color:var(--muted)">Tap Cancel if this was accidental</span>
+  </div>
+  <button class="btn btn-ghost btn-sm" onclick="cancelGripAlert()">Cancel</button>
+</div>
+
+<!-- GRIP TAP PROGRESS -->
+<div id="grip-tap-bar" class="grip-tap-bar" style="display:none">
+  <div style="font-size:11px;color:var(--rose);font-weight:700">✊ <span id="grip-count-text">0</span>/5 taps</div>
+  <div class="grip-pips" id="grip-pips"></div>
+</div>
+
+</div><!-- #root-app -->
+
+<script src="app.js"></script>
 </body>
-
 </html>
