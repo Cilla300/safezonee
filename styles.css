@@ -1876,3 +1876,39 @@ canvas { display: block; }
   .hero-actions .btn { width: 100%; }
   .features-grid { grid-template-columns: 1fr; }
 }
+/* Back Button */
+.back-btn{
+    position:fixed;
+    top:25px;
+    left:25px;
+    width:45px;
+    height:45px;
+    border:none;
+    border-radius:50%;
+    background:rgba(255,255,255,0.08);
+    backdrop-filter:blur(10px);
+    color:#fff;
+    font-size:28px;
+    cursor:pointer;
+    z-index:9999;
+    transition:0.3s ease;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow:0 5px 15px rgba(0,0,0,.3);
+}
+
+.back-btn:hover{
+    background:#f5317f;
+    transform:scale(1.08);
+}
+.typing-cursor{
+    color:#f5317f;
+    animation:blinkCursor .8s infinite;
+}
+
+@keyframes blinkCursor{
+    50%{
+        opacity:0;
+    }
+}

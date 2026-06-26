@@ -1531,3 +1531,19 @@ async function loadDangerZones() {
 }
 
 loadDangerZones();
+const word = "Guardian";
+let i = 0;
+
+function typeGuardian() {
+    const text = document.getElementById("typing-text");
+
+    if (!text) return;
+
+    if (i <= word.length) {
+        text.textContent = word.substring(0, i);
+        i++;
+        setTimeout(typeGuardian, 150);
+    }
+}
+
+document.addEventListener("DOMContentLoaded", typeGuardian);

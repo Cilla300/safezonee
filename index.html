@@ -50,9 +50,10 @@
         </div>
 
         <h1 class="hero-h1">
-          Your Guardian,<br>
-          <span class="hero-gradient-text">Always by Your Side</span>
-        </h1>
+    Your <span id="typing-text" class="hero-gradient-text"></span><span class="typing-cursor">|</span>
+    <br>
+    Always by Your Side
+</h1>
 
         <p class="hero-p">
           SafeZone AI Guardian monitors your journey in real time, detects danger automatically,
@@ -266,6 +267,11 @@
      SCREEN: LOGIN
 ══════════════════════════════════════════════ -->
 <div id="screen-login" class="screen">
+  
+
+  <button class="back-btn" onclick="showScreen('landing')">←</button>
+
+  
   <div class="auth-wrap">
     <div class="auth-card">
       <div class="auth-logo">
@@ -301,6 +307,7 @@
      SCREEN: SIGNUP
 ══════════════════════════════════════════════ -->
 <div id="screen-signup" class="screen">
+   <button class="back-btn" onclick="showScreen('landing')">←</button>
   <div class="auth-wrap">
     <div class="auth-card">
       <div class="auth-logo">
