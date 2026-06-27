@@ -1,4 +1,3 @@
-
 /* ═══════════════════════════════════════════════════════════
    SAFEZONE AI GUARDIAN — app.js
    Vanilla JS rewrite with enhanced motion design
@@ -89,13 +88,23 @@ const AI_RESPONSES = [
     actions:['Notify contact','Full SOS','I\'m okay'] },
 ];
 
+/* ── DISTRESS KEYWORDS for speech recognition ── */
+const DISTRESS_KEYWORDS = ['help','stop','stop it','stop please','save me','please help',
+  'leave me alone','let me go','call police','police','scared','afraid','frightened',
+  'fear','follow','following me','unsafe','not safe','danger','somebody help',
+  'someone help','help me'];
+
+/* Critical keywords that immediately fire SOS without waiting */
+const CRITICAL_VOICE_KEYWORDS = ['help','save me','please help','stop','leave me alone',
+  'let me go','call police','scared','afraid'];
+
 /* ── STATE ── */
 const state = {
   user: null,
   tab: 'home',
   isTracking: false,
   isEmergency: false,
-  sosStep: 0,      // 0=idle, 1=countdown, 2=active
+  sosStep: 0,
   sosCount: 5,
   contacts: JSON.parse(JSON.stringify(INIT_CONTACTS)),
   zones: [],
@@ -107,24 +116,24 @@ const state = {
   isRecording: false,
   aiListening: false,
   aiTypingTimer: null,
-  // Settings
+  recognition: null,   // ← Web Speech API instance
+  voiceSosActive: false,
+  voiceSosCount: 3,
+  voiceSosTimer: null,
+  voiceSosWord: '',
   settings: { push:true, loc:true, rec:true, priv:false, listening:false, grip:false },
-  // Grip SOS
   gripCount: 0,
   gripAlertActive: false,
   gripResetTimer: null,
   gripActivateTimer: null,
-  // Call
   callingContact: null,
-  callStatus: 'idle', // idle|ringing|connected|ended
+  callStatus: 'idle',
   callDur: 0,
   callTimer: null,
   callRingTimer: null,
-  // Report
-  reportStep: 'form', // form|confirm|submitting|success
+  reportStep: 'form',
   report: { type:'', desc:'', severity:'medium', time:'now', anonymous:false },
   reportZoneCount: 0,
-  // Timers
   trackTimer: null,
   journeyTimer: null,
   sosTimer: null,
@@ -133,6 +142,118 @@ const state = {
   mapPhi: 0,
   landingPhi: 0,
 };
+
+/* ═══════════════════════════════════════════════════════════
+   SPEECH RECOGNITION — distress keyword detection
+═══════════════════════════════════════════════════════════ */
+
+function startSpeechListening() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) {
+    pushLog('⚠️ Speech recognition not supported in this browser');
+    return;
+  }
+  // Stop any existing session first
+  stopSpeechListening();
+
+  const rec = new SR();
+  rec.continuous = true;
+  rec.interimResults = true;
+  rec.lang = 'en-US';
+
+  rec.onresult = (event) => {
+    let transcript = '';
+    for (let i = event.resultIndex; i < event.results.length; i++) {
+      transcript += event.results[i][0].transcript.toLowerCase();
+    }
+
+    const hit = DISTRESS_KEYWORDS.find(k => transcript.includes(k));
+    if (!hit) return;
+
+    // Mirror into AI input field so the existing AI response card shows
+    const aiInput = document.getElementById('ai-input');
+    if (aiInput) {
+      aiInput.value = transcript;
+      onAIInput(transcript);
+    }
+
+    // Critical keywords → start cancelable 3-second voice SOS countdown
+    if (CRITICAL_VOICE_KEYWORDS.some(k => transcript.includes(k))) {
+      if (!state.isEmergency && !state.voiceSosActive) {
+        triggerVoiceSOS(hit);
+      }
+    }
+  };
+
+  rec.onerror = (e) => {
+    if (e.error !== 'no-speech') {
+      pushLog(`🎤 Mic error: ${e.error}`);
+    }
+  };
+
+  rec.onend = () => {
+    // Auto-restart loop as long as listening mode is still on
+    if (state.settings.listening && state.recognition) {
+      try { rec.start(); } catch (_) {}
+    }
+  };
+
+  try {
+    rec.start();
+    state.recognition = rec;
+    pushLog('🎤 Microphone active — listening for distress keywords');
+  } catch (e) {
+    pushLog('⚠️ Microphone access denied or unavailable: ' + e.message);
+  }
+}
+
+function stopSpeechListening() {
+  if (state.recognition) {
+    try { state.recognition.stop(); } catch (_) {}
+    state.recognition = null;
+    pushLog('🎤 Microphone stopped');
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   VOICE SOS COUNTDOWN (cancelable 3-second window)
+═══════════════════════════════════════════════════════════ */
+
+function triggerVoiceSOS(word) {
+  if (state.voiceSosActive || state.isEmergency) return;
+  state.voiceSosActive = true;
+  state.voiceSosCount  = 3;
+  state.voiceSosWord   = word;
+
+  const overlay   = document.getElementById('voice-sos-overlay');
+  const countEl   = document.getElementById('voice-sos-count');
+  const wordEl    = document.getElementById('voice-sos-word');
+  if (overlay) overlay.style.display = 'flex';
+  if (wordEl)  wordEl.textContent = `"${word}" detected`;
+  if (countEl) countEl.textContent = state.voiceSosCount;
+
+  pushLog(`🎤 Voice distress: "${word}" heard — SOS in 3s (tap Cancel to abort)`);
+
+  state.voiceSosTimer = setInterval(() => {
+    state.voiceSosCount--;
+    if (countEl) countEl.textContent = state.voiceSosCount;
+    if (state.voiceSosCount <= 0) {
+      clearInterval(state.voiceSosTimer);
+      state.voiceSosActive = false;
+      if (overlay) overlay.style.display = 'none';
+      activateEmergency();
+    }
+  }, 1000);
+}
+
+function cancelVoiceSOS() {
+  clearInterval(state.voiceSosTimer);
+  state.voiceSosActive = false;
+  state.voiceSosCount  = 3;
+  const overlay = document.getElementById('voice-sos-overlay');
+  if (overlay) overlay.style.display = 'none';
+  pushLog('✋ Voice SOS cancelled by user');
+}
 
 /* ═══════════════════════════════════════════════════════════
    SCREEN NAVIGATION
@@ -762,6 +883,7 @@ function clearAI() {
   document.getElementById('ai-card').style.borderColor = '';
 }
 
+/* ── toggleAI: the "Start Listening" button in the AI card on Home tab ── */
 function toggleAI() {
   state.aiListening = !state.aiListening;
   const btn  = document.getElementById('ai-listen-btn');
@@ -774,6 +896,30 @@ function toggleAI() {
   }
   if (wave) wave.style.display = state.aiListening ? 'flex' : 'none';
   if (mon)  mon.style.display  = state.aiListening ? 'inline' : 'none';
+
+  // ── SYNC: also toggle the profile-page Listening Mode switch ──
+  if (state.aiListening !== state.settings.listening) {
+    state.settings.listening = state.aiListening;
+    const profileTog = document.getElementById('tog-listen');
+    if (profileTog) profileTog.classList.toggle('on', state.settings.listening);
+    const badge = document.getElementById('listening-active-badge');
+    if (badge) badge.style.display = state.settings.listening ? 'flex' : 'none';
+    const wrap = document.getElementById('listening-wrap');
+    if (wrap) {
+      wrap.style.background  = state.settings.listening ? 'rgba(245,49,127,0.07)' : 'rgba(255,255,255,0.02)';
+      wrap.style.borderColor = state.settings.listening ? 'rgba(245,49,127,0.25)' : 'var(--border)';
+    }
+    const notice = document.getElementById('travel-active-notice');
+    updateTravelNotice(notice);
+  }
+
+  // ── Start/stop real speech recognition ──
+  if (state.aiListening) {
+    startSpeechListening();
+  } else {
+    stopSpeechListening();
+  }
+
   pushLog(state.aiListening ? '🎤 AI Guardian is listening…' : '🎤 AI Guardian paused');
 }
 
@@ -849,7 +995,6 @@ function shareLocationDuringCall() {
 
 document.addEventListener('click', function(e) {
   if (!state.settings.grip) return;
-  // Don't trigger on buttons/controls
   if (e.target.closest('button, .btn, .nav-tab, .call-ctrl-btn, .toggle-switch, input, textarea, .type-chip, .when-chip, .severity-btn')) return;
 
   state.gripCount++;
@@ -895,7 +1040,6 @@ function triggerGripAlert() {
     if (c <= 0) {
       clearInterval(state.gripActivateTimer);
       cancelGripAlert();
-      // Don't auto-activate in demo — just show notification
       pushLog('🚨 Grip SOS — emergency would activate now');
     }
   }, 1000);
@@ -919,21 +1063,46 @@ function toggleSetting(key) {
   if (el) el.classList.toggle('on', state.settings[key]);
 }
 
+/* ── toggleListening: Profile page "Listening Mode" switch ── */
 function toggleListening() {
   state.settings.listening = !state.settings.listening;
-  const tog  = document.getElementById('tog-listen');
-  const wrap = document.getElementById('listening-wrap');
+  const tog   = document.getElementById('tog-listen');
+  const wrap  = document.getElementById('listening-wrap');
   const badge = document.getElementById('listening-active-badge');
   const notice = document.getElementById('travel-active-notice');
 
-  if (tog) tog.classList.toggle('on', state.settings.listening);
-  if (wrap) wrap.style.background = state.settings.listening ? 'rgba(245,49,127,0.07)' : 'rgba(255,255,255,0.02)';
-  if (wrap) wrap.style.borderColor = state.settings.listening ? 'rgba(245,49,127,0.25)' : 'var(--border)';
-  if (badge) badge.style.display = state.settings.listening ? 'flex' : 'none';
+  if (tog)   tog.classList.toggle('on', state.settings.listening);
+  if (wrap)  wrap.style.background  = state.settings.listening ? 'rgba(245,49,127,0.07)' : 'rgba(255,255,255,0.02)';
+  if (wrap)  wrap.style.borderColor = state.settings.listening ? 'rgba(245,49,127,0.25)' : 'var(--border)';
+  if (badge) badge.style.display    = state.settings.listening ? 'flex' : 'none';
 
   updateTravelNotice(notice);
+
+  // ── SYNC state ──
   state.aiListening = state.settings.listening;
-  pushLog(state.settings.listening ? '🎤 Listening Mode enabled — AI Guardian is active' : '🎤 Listening Mode disabled');
+
+  // ── SYNC the AI Guardian "Start Listening" button on Home tab ──
+  const aiBtn  = document.getElementById('ai-listen-btn');
+  const aiWave = document.getElementById('ai-wave');
+  const aiMon  = document.getElementById('ai-monitoring');
+  if (aiBtn) {
+    aiBtn.textContent  = state.aiListening ? '⏹ Stop' : '🎤 Start Listening';
+    aiBtn.style.color  = state.aiListening ? T.pink : T.muted;
+    aiBtn.style.background = state.aiListening ? 'rgba(245,49,127,0.14)' : 'rgba(255,255,255,0.05)';
+  }
+  if (aiWave) aiWave.style.display = state.aiListening ? 'flex' : 'none';
+  if (aiMon)  aiMon.style.display  = state.aiListening ? 'inline' : 'none';
+
+  // ── Start/stop real microphone speech recognition ──
+  if (state.settings.listening) {
+    startSpeechListening();
+  } else {
+    stopSpeechListening();
+  }
+
+  pushLog(state.settings.listening
+    ? '🎤 Listening Mode enabled — AI Guardian is active'
+    : '🎤 Listening Mode disabled');
 }
 
 function toggleGrip() {
@@ -1026,7 +1195,6 @@ function pushLog(msg) {
   state.activityLog.unshift({ id: Date.now(), msg, time: new Date().toLocaleTimeString() });
   if (state.activityLog.length > 15) state.activityLog.pop();
 
-  // Badge update
   const badge = document.getElementById('alerts-badge');
   if (badge) {
     badge.textContent = state.activityLog.length > 9 ? '9+' : state.activityLog.length;
@@ -1035,7 +1203,6 @@ function pushLog(msg) {
     requestAnimationFrame(() => { badge.style.animation = 'popIn 0.3s var(--ease-spring) both'; });
   }
 
-  // If we're on the alerts tab, re-render
   if (state.tab === 'alerts') renderAlerts();
 }
 
@@ -1061,7 +1228,6 @@ function renderAlerts() {
     }
   }
 
-  // Emergency card
   const emCard = document.getElementById('emerg-alert-card');
   const emBody = document.getElementById('emerg-alert-body');
   if (emCard && state.isEmergency) {
@@ -1077,7 +1243,6 @@ function renderAlerts() {
     emCard.style.display = 'none';
   }
 
-  // Recordings
   const recActiveEl = document.getElementById('rec-active');
   if (recActiveEl) recActiveEl.style.display = state.isRecording ? 'flex' : 'none';
 
@@ -1375,15 +1540,12 @@ function drawMapFrame(ctx, w, h, phi, isTracking, emergency, zones, police, lat,
     return { x: w/2 + (lo-bLng)*sc, y: h/2 - (la-bLat)*sc };
   };
 
-  // bg
   ctx.fillStyle = '#0c0810'; ctx.fillRect(0,0,w,h);
 
-  // grid
   ctx.strokeStyle = '#15101e'; ctx.lineWidth = 1;
   for (let x=0; x<w; x+=36) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,h); ctx.stroke(); }
   for (let y=0; y<h; y+=36) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(w,y); ctx.stroke(); }
 
-  // roads
   const roads = [[.15,0,.15,1],[.4,0,.4,1],[.68,0,.68,1],[0,.35,1,.35],[0,.6,1,.6],[.15,.35,.4,.6],[.4,0,.68,.35]];
   roads.forEach(([x1r,y1r,x2r,y2r]) => {
     ctx.strokeStyle='#2a1535'; ctx.lineWidth=4;
@@ -1391,7 +1553,6 @@ function drawMapFrame(ctx, w, h, phi, isTracking, emergency, zones, police, lat,
     ctx.strokeStyle='#1e0f28'; ctx.lineWidth=1.5; ctx.stroke();
   });
 
-  // zones
   zones.forEach(z => {
     const pos = toXY(z.lat, z.lng);
     const rgb = ZONE_RGBA[z.lvl] || ZONE_RGBA.orange;
@@ -1405,7 +1566,6 @@ function drawMapFrame(ctx, w, h, phi, isTracking, emergency, zones, police, lat,
     ctx.setLineDash([4,4]); ctx.stroke(); ctx.setLineDash([]);
   });
 
-  // safe route
   if (isTracking) {
     const pts = [toXY(lat,lng),toXY(8.891,76.615),toXY(8.890,76.617),toXY(8.889,76.619)];
     ctx.strokeStyle='rgba(31,207,122,0.5)'; ctx.lineWidth=3;
@@ -1414,7 +1574,6 @@ function drawMapFrame(ctx, w, h, phi, isTracking, emergency, zones, police, lat,
     ctx.stroke(); ctx.setLineDash([]);
   }
 
-  // police
   police.forEach(ps => {
     const pos = toXY(ps.lat,ps.lng);
     ctx.fillStyle='#4080ff'; ctx.beginPath(); ctx.arc(pos.x,pos.y,6,0,Math.PI*2); ctx.fill();
@@ -1423,7 +1582,6 @@ function drawMapFrame(ctx, w, h, phi, isTracking, emergency, zones, police, lat,
     ctx.fillText('P',pos.x,pos.y);
   });
 
-  // user dot
   const up  = toXY(lat, lng);
   const pls = Math.sin(phi)*0.5+0.5;
   const dc  = emergency ? '245,49,127' : isTracking ? '31,207,122' : '180,130,200';
@@ -1456,7 +1614,7 @@ function updateZoneCounts() {
 }
 
 /* ═══════════════════════════════════════════════════════════
-   SCROLL-TRIGGERED ANIMATIONS (IntersectionObserver)
+   SCROLL-TRIGGERED ANIMATIONS
 ═══════════════════════════════════════════════════════════ */
 
 function initScrollAnimations() {
@@ -1490,6 +1648,8 @@ function clearAll() {
   clearInterval(state.gripActivateTimer);
   cancelAnimationFrame(state.mapAnimFrame);
   cancelAnimationFrame(state.landingMapAnimFrame);
+  stopSpeechListening();
+  cancelVoiceSOS();
   state.isTracking = false;
   state.isEmergency = false;
   state.sosStep = 0;
@@ -1506,8 +1666,6 @@ document.addEventListener('DOMContentLoaded', () => {
   renderHowSteps();
   initLandingMap();
   initScrollAnimations();
-
-  // Animate stat numbers on landing
   animateStatNumbers();
 });
 
@@ -1516,29 +1674,26 @@ function animateStatNumbers() {
     el.style.animation = 'fadeUp 0.6s var(--ease-out) 0.6s both';
   });
 }
+
 async function loadDangerZones() {
     try {
         const response = await fetch("http://localhost:3000/dangerzones");
         const data = await response.json();
-
         state.zones = data;
-
         console.log("Loaded from Neo4j:", data);
-
     } catch (err) {
         console.error("Error loading danger zones:", err);
     }
 }
 
 loadDangerZones();
+
 const word = "Guardian";
 let i = 0;
 
 function typeGuardian() {
     const text = document.getElementById("typing-text");
-
     if (!text) return;
-
     if (i <= word.length) {
         text.textContent = word.substring(0, i);
         i++;
