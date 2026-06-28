@@ -108,6 +108,7 @@ const state = {
   sosCount: 5,
   contacts: JSON.parse(JSON.stringify(INIT_CONTACTS)),
   zones: [],
+  locations:[],
   lat: 8.8922,
   lng: 76.614,
   recordings: [],
@@ -1534,69 +1535,338 @@ function startAppMap() {
   drawMap();
 }
 
+/* ============================
+   MAP LOCATIONS
+============================ */
+
 function drawMapFrame(ctx, w, h, phi, isTracking, emergency, zones, police, lat, lng) {
-  const toXY = (la, lo) => {
-    const bLat=8.892, bLng=76.614, sc=5800;
-    return { x: w/2 + (lo-bLng)*sc, y: h/2 - (la-bLat)*sc };
-  };
 
-  ctx.fillStyle = '#0c0810'; ctx.fillRect(0,0,w,h);
+    const toXY = (la, lo) => {
 
-  ctx.strokeStyle = '#15101e'; ctx.lineWidth = 1;
-  for (let x=0; x<w; x+=36) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,h); ctx.stroke(); }
-  for (let y=0; y<h; y+=36) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(w,y); ctx.stroke(); }
+        const baseLat = 8.891;
+        const baseLng = 76.615;
+        const scale = 35000;
 
-  const roads = [[.15,0,.15,1],[.4,0,.4,1],[.68,0,.68,1],[0,.35,1,.35],[0,.6,1,.6],[.15,.35,.4,.6],[.4,0,.68,.35]];
-  roads.forEach(([x1r,y1r,x2r,y2r]) => {
-    ctx.strokeStyle='#2a1535'; ctx.lineWidth=4;
-    ctx.beginPath(); ctx.moveTo(x1r*w,y1r*h); ctx.lineTo(x2r*w,y2r*h); ctx.stroke();
-    ctx.strokeStyle='#1e0f28'; ctx.lineWidth=1.5; ctx.stroke();
-  });
+        return {
+            x: w / 2 + (lo - baseLng) * scale,
+            y: h / 2 - (la - baseLat) * scale
+        };
 
-  zones.forEach(z => {
+    };
+
+    // ===== BACKGROUND =====
+
+    const bg = ctx.createLinearGradient(0, 0, w, h);
+
+    bg.addColorStop(0, "#05060d");
+    bg.addColorStop(.5, "#0c1328");
+    bg.addColorStop(1, "#090b14");
+
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, w, h);
+
+    // ===== GRID =====
+
+    ctx.strokeStyle = "rgba(255,255,255,.05)";
+    ctx.lineWidth = 1;
+
+    for (let x = 0; x < w; x += 40) {
+
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, h);
+        ctx.stroke();
+
+    }
+
+    for (let y = 0; y < h; y += 40) {
+
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(w, y);
+        ctx.stroke();
+
+    }
+
+    // ===== ROADS =====
+
+    const roads = [
+
+        [80, 50, 80, h - 50],
+        [240, 20, 240, h - 20],
+        [430, 0, 430, h],
+        [700, 20, 700, h - 20],
+
+        [0, 120, w, 120],
+        [0, 270, w, 270],
+        [0, 430, w, 430],
+
+        [80,120,240,270],
+        [240,270,430,430],
+        [430,120,700,270]
+
+    ];
+
+    roads.forEach(r=>{
+
+        ctx.strokeStyle="#242f52";
+        ctx.lineWidth=10;
+
+        ctx.beginPath();
+        ctx.moveTo(r[0],r[1]);
+        ctx.lineTo(r[2],r[3]);
+        ctx.stroke();
+
+        ctx.strokeStyle="#516796";
+        ctx.lineWidth=2;
+
+        ctx.stroke();
+
+    });
+
+    // ===== BUILDINGS =====
+
+    const buildings=[
+
+        [130,70],
+        [520,80],
+        [820,140],
+        [350,350],
+        [720,360],
+        [180,260],
+        [540,240],
+        [900,310]
+
+    ];
+
+    buildings.forEach(b=>{
+
+        ctx.fillStyle="#1a2238";
+        ctx.fillRect(b[0],b[1],42,42);
+
+        ctx.strokeStyle="#5f74a5";
+        ctx.strokeRect(b[0],b[1],42,42);
+
+    });
+// ===== DANGER ZONES =====
+
+zones.forEach(z => {
+
     const pos = toXY(z.lat, z.lng);
-    const rgb = ZONE_RGBA[z.lvl] || ZONE_RGBA.orange;
-    const r   = z.r * (w/780);
-    const g   = ctx.createRadialGradient(pos.x,pos.y,0,pos.x,pos.y,r);
-    g.addColorStop(0, `rgba(${rgb},0.28)`);
-    g.addColorStop(.7,`rgba(${rgb},0.12)`);
-    g.addColorStop(1, `rgba(${rgb},0)`);
-    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(pos.x,pos.y,r,0,Math.PI*2); ctx.fill();
-    ctx.strokeStyle=`rgba(${rgb},0.55)`; ctx.lineWidth=1.2;
-    ctx.setLineDash([4,4]); ctx.stroke(); ctx.setLineDash([]);
-  });
 
-  if (isTracking) {
-    const pts = [toXY(lat,lng),toXY(8.891,76.615),toXY(8.890,76.617),toXY(8.889,76.619)];
-    ctx.strokeStyle='rgba(31,207,122,0.5)'; ctx.lineWidth=3;
-    ctx.setLineDash([8,5]); ctx.beginPath();
-    pts.forEach((pt,i) => i===0 ? ctx.moveTo(pt.x,pt.y) : ctx.lineTo(pt.x,pt.y));
-    ctx.stroke(); ctx.setLineDash([]);
-  }
+    let color = "#ffaa00";
 
-  police.forEach(ps => {
-    const pos = toXY(ps.lat,ps.lng);
-    ctx.fillStyle='#4080ff'; ctx.beginPath(); ctx.arc(pos.x,pos.y,6,0,Math.PI*2); ctx.fill();
-    ctx.fillStyle='#fff'; ctx.font='bold 8px sans-serif';
-    ctx.textAlign='center'; ctx.textBaseline='middle';
-    ctx.fillText('P',pos.x,pos.y);
-  });
+    if(z.lvl=="red") color="#ff3b3b";
+    if(z.lvl=="green") color="#22ff88";
 
-  const up  = toXY(lat, lng);
-  const pls = Math.sin(phi)*0.5+0.5;
-  const dc  = emergency ? '245,49,127' : isTracking ? '31,207,122' : '180,130,200';
+    const pulse = Math.sin(phi*2)*10;
 
-  if (emergency || isTracking) {
-    ctx.strokeStyle=`rgba(${dc},${0.25+pls*0.4})`; ctx.lineWidth=2;
-    ctx.beginPath(); ctx.arc(up.x,up.y,18+pls*12,0,Math.PI*2); ctx.stroke();
-    ctx.strokeStyle=`rgba(${dc},${0.1+pls*0.2})`; ctx.lineWidth=1.5;
-    ctx.beginPath(); ctx.arc(up.x,up.y,30+pls*18,0,Math.PI*2); ctx.stroke();
-  }
-  ctx.fillStyle=`rgb(${dc})`;
-  ctx.beginPath(); ctx.arc(up.x,up.y,8,0,Math.PI*2); ctx.fill();
-  ctx.fillStyle='#fff';
-  ctx.beginPath(); ctx.arc(up.x,up.y,3,0,Math.PI*2); ctx.fill();
+    const grad = ctx.createRadialGradient(
+        pos.x,pos.y,0,
+        pos.x,pos.y,
+        60+pulse
+    );
+
+    grad.addColorStop(0,color+"66");
+    grad.addColorStop(.6,color+"22");
+    grad.addColorStop(1,"transparent");
+
+    ctx.fillStyle=grad;
+
+    ctx.beginPath();
+    ctx.arc(pos.x,pos.y,60+pulse,0,Math.PI*2);
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.arc(pos.x,pos.y,8,0,Math.PI*2);
+
+    ctx.fillStyle=color;
+    ctx.shadowColor=color;
+    ctx.shadowBlur=20;
+    ctx.fill();
+    ctx.shadowBlur=0;
+
+    // warning icon
+
+    if(z.lvl=="red"){
+
+        ctx.font="20px Arial";
+        ctx.fillText("⚠",pos.x-10,pos.y-18);
+
+    }
+
+    // place name
+
+    ctx.fillStyle="#ffffff";
+
+    ctx.font="bold 13px Arial";
+
+    ctx.fillText(z.label,pos.x+14,pos.y-8);
+
+    // risk text
+
+    ctx.font="11px Arial";
+
+    ctx.fillStyle=color;
+
+    ctx.fillText(z.lvl.toUpperCase(),pos.x+14,pos.y+10);
+
+});
+// ===== POLICE STATIONS =====
+
+police.forEach(ps=>{
+
+    const pos=toXY(ps.lat,ps.lng);
+
+    ctx.beginPath();
+
+    ctx.arc(pos.x,pos.y,9,0,Math.PI*2);
+
+    ctx.fillStyle="#3fa9ff";
+    ctx.fill();
+
+    ctx.shadowColor="#3fa9ff";
+    ctx.shadowBlur=20;
+
+    ctx.fill();
+
+    ctx.shadowBlur=0;
+
+    ctx.font="18px Arial";
+    ctx.fillText("👮",pos.x+10,pos.y-8);
+
+    if(ps.label){
+
+        ctx.fillStyle="#8fd3ff";
+        ctx.font="12px Arial";
+        ctx.fillText(ps.label,pos.x+28,pos.y+5);
+
+    }
+    // ===== MAP LOCATIONS =====
+
+state.locations.forEach(place =>  {
+
+    const pos = toXY(place.lat, place.lng);
+
+    // glowing dot
+    ctx.beginPath();
+    ctx.arc(pos.x, pos.y, 8, 0, Math.PI * 2);
+    let color = "#22ff88";
+
+if (place.risk === "High") color = "#ff3b3b";
+else if (place.risk === "Medium") color = "#ffaa00";
+
+ctx.fillStyle = color;
+ctx.shadowColor = color;
+    ctx.shadowBlur = 18;
+    ctx.fill();
+    ctx.shadowBlur = 0;
+
+    // icon
+    ctx.font = "20px Arial";
+    let icon = "📍";
+
+if (place.risk === "High") icon = "⚠️";
+else if (place.risk === "Medium") icon = "🟠";
+else icon = "🟢";
+
+ctx.font = "18px Arial";
+ctx.fillText(icon, pos.x - 10, pos.y - 18);
+
+    // label background
+    ctx.fillStyle = "rgba(10,15,30,0.85)";
+    ctx.fillRect(pos.x + 12, pos.y - 10, 95, 18);
+
+    // location name
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "11px Arial";
+    ctx.fillText(place.name, pos.x + 22, pos.y + 5);
+
+});
+
+});// ===== SAFE ROUTE =====
+
+if(isTracking){
+
+    const route=[
+
+        toXY(lat,lng),
+        toXY(8.8922,76.6140),
+        toXY(8.8910,76.6150),
+        toXY(8.8900,76.6170),
+        toXY(8.8890,76.6190)
+
+    ];
+
+    ctx.strokeStyle="#00ff88";
+    ctx.lineWidth=5;
+    ctx.setLineDash([14,8]);
+
+    ctx.beginPath();
+
+    route.forEach((p,i)=>{
+
+        if(i===0)
+            ctx.moveTo(p.x,p.y);
+        else
+            ctx.lineTo(p.x,p.y);
+
+    });
+
+    ctx.stroke();
+    ctx.setLineDash([]);
+
 }
+
+// ===== USER LOCATION =====
+
+const me=toXY(lat,lng);
+
+const pulse=Math.sin(phi*2)*8;
+
+ctx.beginPath();
+ctx.arc(me.x,me.y,18+pulse,0,Math.PI*2);
+ctx.strokeStyle="rgba(0,255,200,.35)";
+ctx.lineWidth=2;
+ctx.stroke();
+
+ctx.beginPath();
+ctx.arc(me.x,me.y,10,0,Math.PI*2);
+ctx.fillStyle="#00d9ff";
+ctx.fill();
+
+ctx.fillStyle="#ffffff";
+ctx.beginPath();
+ctx.arc(me.x,me.y,4,0,Math.PI*2);
+ctx.fill();
+
+ctx.fillStyle="#ffffff";
+ctx.font="bold 12px Arial";
+ctx.fillText("YOU",me.x+15,me.y);
+
+// ===== LEGEND =====
+
+ctx.fillStyle="rgba(0,0,0,.72)";
+ctx.fillRect(15,h-180,220,120);
+
+ctx.fillStyle="#ffffff";
+ctx.font="bold 13px Arial";
+ctx.fillText("MAP LEGEND",30,h-155);
+
+ctx.fillStyle="#ff3b3b";
+ctx.fillText("🔴 High Risk",30,h-130);
+
+ctx.fillStyle="#ffaa00";
+ctx.fillText("🟠 Moderate",30,h-105);
+
+ctx.fillStyle="#22ff88";
+ctx.fillText("🟢 Safe",30,h-80);
+
+ctx.fillStyle="#00d9ff";
+ctx.fillText("👤 Your Location",30,h-55);
+
+}
+
 
 function updateMapCoords() {
   const el = document.getElementById('map-coords');
@@ -1686,8 +1956,27 @@ async function loadDangerZones() {
     }
 }
 
-loadDangerZones();
 
+async function loadMapLocations() {
+
+    try {
+
+        const response = await fetch("http://localhost:3000/map");
+        const data = await response.json();
+
+        state.locations = data;
+
+        console.log("Loaded locations:", data);
+
+    } catch (err) {
+
+        console.error("Error loading map locations:", err);
+
+    }
+
+}
+loadDangerZones();
+loadMapLocations();
 const word = "Guardian";
 let i = 0;
 
@@ -1702,3 +1991,35 @@ function typeGuardian() {
 }
 
 document.addEventListener("DOMContentLoaded", typeGuardian);
+async function showSafeRoute() {
+
+    console.log("Button clicked");
+
+    try {
+
+        const response = await fetch("http://localhost:3000/routes");
+        const routes = await response.json();
+
+        let message = "🛡️ SafeZone Graph Routes\n\n";
+
+        routes.forEach(route => {
+
+            message +=
+`${route.from}
+   ↓ ${route.relation}
+${route.to}
+
+`;
+
+        });
+
+        alert(message);
+
+    } catch (err) {
+
+        console.error(err);
+        alert("Unable to load routes.");
+
+    }
+
+}

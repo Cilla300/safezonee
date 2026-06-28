@@ -221,13 +221,79 @@ const lerp = (a, b, t) => a + (b - a) * t;
     const ctx = canvas.getContext('2d');
 
     // Map data
-    const roads = [
-        { x1: 0.0, y1: 0.42, x2: 1.0, y2: 0.42, w: 14, col: '#1a0d2e' },
-        { x1: 0.0, y1: 0.68, x2: 1.0, y2: 0.68, w: 10, col: '#160c26' },
-        { x1: 0.22, y1: 0.0, x2: 0.22, y2: 1.0, w: 12, col: '#1a0d2e' },
-        { x1: 0.55, y1: 0.0, x2: 0.55, y2: 1.0, w: 10, col: '#160c26' },
-        { x1: 0.80, y1: 0.0, x2: 0.80, y2: 1.0, w: 8, col: '#130a22' },
-    ];
+    const roads=[
+
+[80,40,80,480],
+
+[240,0,240,520],
+
+[430,20,430,500],
+
+[700,0,700,520],
+
+[0,120,1000,120],
+
+[0,270,1000,270],
+
+[0,430,1000,430],
+
+[80,120,240,270],
+
+[240,270,430,430],
+
+[430,120,700,270],
+
+[700,270,940,430]
+
+];
+
+roads.forEach(r=>{
+
+ctx.strokeStyle="#232b46";
+ctx.lineWidth=10;
+
+ctx.beginPath();
+ctx.moveTo(r[0],r[1]);
+ctx.lineTo(r[2],r[3]);
+ctx.stroke();
+
+ctx.strokeStyle="#44527a";
+ctx.lineWidth=2;
+
+ctx.stroke();
+
+});
+
+const buildings=[
+
+[130,70],
+
+[520,80],
+
+[820,160],
+
+[330,360],
+
+[720,360],
+
+[550,250],
+
+[170,240]
+
+];
+
+buildings.forEach(b=>{
+
+ctx.fillStyle="#1b2238";
+
+ctx.fillRect(b[0],b[1],40,40);
+
+ctx.strokeStyle="#3f5077";
+
+ctx.strokeRect(b[0],b[1],40,40);
+
+});
+
     const zones = [
         { x: 0.12, y: 0.55, r: 0.06, col: 'rgba(31,207,122,', alpha: 0.14, border: 'rgba(31,207,122,0.3)', label: 'Safe' },
         { x: 0.38, y: 0.30, r: 0.07, col: 'rgba(245,166,35,', alpha: 0.12, border: 'rgba(245,166,35,0.3)', label: 'Moderate' },
@@ -270,25 +336,7 @@ const lerp = (a, b, t) => a + (b - a) * t;
         for (let x = 0; x < W; x += W / 8) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); }
         for (let y = 0; y < H; y += H / 5) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
 
-        // Roads
-        roads.forEach(r => {
-            ctx.beginPath();
-            ctx.moveTo(r.x1 * W, r.y1 * H);
-            ctx.lineTo(r.x2 * W, r.y2 * H);
-            ctx.strokeStyle = r.col;
-            ctx.lineWidth = r.w;
-            ctx.lineCap = 'round';
-            ctx.stroke();
-            // Lane markings
-            ctx.beginPath();
-            ctx.moveTo(r.x1 * W, r.y1 * H);
-            ctx.lineTo(r.x2 * W, r.y2 * H);
-            ctx.strokeStyle = 'rgba(255,255,255,0.035)';
-            ctx.lineWidth = 1;
-            ctx.setLineDash([18, 14]);
-            ctx.stroke();
-            ctx.setLineDash([]);
-        });
+        
 
         // Zones
         zones.forEach(z => {
