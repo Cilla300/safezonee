@@ -187,10 +187,15 @@ function startSpeechListening() {
   };
 
   rec.onerror = (e) => {
-    if (e.error !== 'no-speech') {
-      pushLog(`🎤 Mic error: ${e.error}`);
-    }
-  };
+  if (
+    e.error === "aborted" ||
+    e.error === "no-speech"
+  ) {
+    return;
+  }
+
+  pushLog(`🎤 Mic error: ${e.error}`);
+};
 
   rec.onend = () => {
     // Auto-restart loop as long as listening mode is still on
