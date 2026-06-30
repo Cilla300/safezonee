@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const neo4j = require("neo4j-driver");
 const cors = require("cors");
@@ -7,8 +8,11 @@ const app = express();
 app.use(cors());
 
 const driver = neo4j.driver(
-    "neo4j+s://8f53228e.databases.neo4j.io",
-    neo4j.auth.basic("8f53228e", "oCCqLULb0D8pKLP4Z85t8QoTnrNLr1schnReDfHcEO0")
+    process.env.NEO4J_URI,
+    neo4j.auth.basic(
+        process.env.NEO4J_USERNAME,
+        process.env.NEO4J_PASSWORD
+    )
 );
 
 // =====================
@@ -17,7 +21,7 @@ const driver = neo4j.driver(
 app.get("/dangerzones", async (req, res) => {
 
     const session = driver.session({
-        database: "8f53228e"
+        database:process.env.NEO4J_DATABASE
     });
 
     try {
@@ -73,7 +77,7 @@ app.get("/dangerzones", async (req, res) => {
 app.get("/routes", async (req, res) => {
 
     const session = driver.session({
-        database: "8f53228e"
+        database:process.env.NEO4J_DATABASE
         
     });
 
@@ -113,7 +117,7 @@ app.get("/routes", async (req, res) => {
 app.get("/map", async (req, res) => {
 
     const session = driver.session({
-        database: "8f53228e"
+        database:process.env.NEO4J_DATABASE
     
     });
 
