@@ -52,7 +52,7 @@ Archana K
 Alena N Saji
 
 Hemani R
-...
+
 
 ## 🛠️ Tech Stack
 
